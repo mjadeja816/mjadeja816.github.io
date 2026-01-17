@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Terms of Service | Google Drive File Picker (ChatGPT Compatible)</title>
+<meta name="description" content="Terms of Service for the Google Drive File Picker (ChatGPT Compatible) Chrome extension." />
+<style>
+body { font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 0; color: #111; }
+header, main, footer { max-width: 900px; margin: 0 auto; padding: 20px; }
+header { padding-top: 32px; padding-bottom: 12px; }
+h1 { margin: 0 0 10px 0; font-size: 26px; }
+h2 { margin-top: 22px; font-size: 18px; }
+p, li { font-size: 15px; }
+.meta { color: #444; font-size: 14px; }
+.box { background: #f7f7f7; border: 1px solid #e6e6e6; padding: 14px 16px; border-radius: 8px; }
+a { color: #0b57d0; text-decoration: none; }
+a:hover { text-decoration: underline; }
+footer { border-top: 1px solid #eee; color: #444; font-size: 14px; padding-top: 14px; padding-bottom: 34px; }
+</style>
+</head>
+<body>
+<header>
+<h1>Terms of Service</h1>
+<div class="meta">Google Drive File Picker (ChatGPT Compatible) Chrome Extension</div>
+<div class="meta">Last updated: <span id="lastUpdated"></span></div>
+</header>
+
+<main>
+<div class="box">
+<p>
+These Terms of Service govern your use of the Chrome extension
+<strong>Google Drive File Picker (ChatGPT Compatible)</strong> (the “Extension”).
+By installing or using the Extension, you agree to these Terms.
+</p>
+</div>
+
+<h2>1. Purpose of the Extension</h2>
+<p>
+The Extension helps users browse and select files from their own Google Drive and attach them through
+file upload interfaces on supported websites such as ChatGPT.
+</p>
+
+<h2>2. User eligibility</h2>
+<p>
+You must comply with applicable laws and the policies of the Chrome Web Store and Google services.
+If you use the Extension on behalf of an organization, you confirm you have the authority to do so.
+</p>
+
+<h2>3. Google account access and permissions</h2>
+<p>
+The Extension uses Google OAuth via the Chrome Identity API to request permission to access Google Drive.
+The Extension requests read only access to Drive in order to list files and download a file only when you
+explicitly choose a file.
+</p>
+<p>
+You can revoke access at any time from your Google Account permissions page.
+Uninstalling the Extension stops further access.
+</p>
+
+<h2>4. Data handling</h2>
+<p>
+The Extension processes data locally in your browser. It does not send your Google Drive files to any
+developer controlled server. It does not sell user data.
+</p>
+<p>
+Please also review the Privacy Policy for detailed data handling information.
+</p>
+
+<h2>5. Acceptable use</h2>
+<ul>
+<li>Do not use the Extension to violate laws, platform rules, or the rights of others.</li>
+<li>Do not attempt to bypass access controls or misuse Google APIs.</li>
+<li>Do not reverse engineer or abuse the Extension to harm systems or users.</li>
+</ul>
+
+<h2>6. No warranties</h2>
+<p>
+The Extension is provided on an “as is” and “as available” basis. Functionality may change due to updates
+in browsers, supported websites, or Google services. No guarantee is made that it will be error free or
+uninterrupted.
+</p>
+
+<h2>7. Limitation of liability</h2>
+<p>
+To the maximum extent permitted by law, the developer is not liable for indirect, incidental, special,
+consequential, or punitive damages, or any loss of data, use, or business, arising from your use of the
+Extension.
+</p>
+
+<h2>8. Changes to the Extension or Terms</h2>
+<p>
+The Extension and these Terms may be updated from time to time. Continued use after changes means you
+accept the updated Terms. The “Last updated” date reflects the latest revision.
+</p>
+
+<h2>9. Contact</h2>
+<p>
+If you have questions about these Terms, contact:
+<br />
+<strong>Email:</strong> <a href="mailto:mahipaljadeja.cse@mnit.ac.in">mahipaljadeja.cse@mnit.ac.in</a>
+</p>
+</main>
+
+<footer>
+<div>
+This page is intended to satisfy Chrome Web Store and Google OAuth branding requirements for a consumer extension.
+</div>
+</footer>
+
+<script>
+(function () {
+const d = new Date();
+const yyyy = d.getFullYear();
+const mm = String(d.getMonth() + 1).padStart(2, "0");
+const dd = String(d.getDate()).padStart(2, "0");
+document.getElementById("lastUpdated").textContent = `${yyyy}-${mm}-${dd}`;
+})();
+</script>
+</body>
+</html>
