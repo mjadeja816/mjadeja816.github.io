@@ -1,0 +1,85 @@
+ten<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chrome Extension | Mahipal Jadeja</title>
+  <meta name="description" content="Google Drive File Picker Chrome extension. OAuth verification information, permissions, and policy links.">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <div class="container">
+    <div class="nav">
+      <div class="brand">Mahipal Jadeja</div>
+      <div class="links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="extension.html">Extension</a>
+        <a href="tools.html">Tools</a>
+        <a href="talks.html">Talks</a>
+        <a href="contact.html">Contact</a>
+        <a href="privacy.html">Extension Privacy</a>
+      </div>
+    </div>
+
+    <div class="hero">
+      <h1>Google Drive File Picker Chrome Extension</h1>
+      <p>
+        This page exists to support OAuth verification and provide a transparent description of what the extension does,
+        why Google Drive permissions are requested, and where users can read the privacy policy.
+      </p>
+      <div class="cta">
+        <a class="btn btnPrimary" href="https://chromewebstore.google.com/detail/niajcmfjapmmhgfabfiglobnbbblmilb?utm_source=item-share-cb" target="_blank" rel="noopener">Chrome Web Store listing</a>
+        <a class="btn" href="extension-privacy.html">Extension privacy policy</a>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h2>What the extension does</h2>
+        <ul>
+          <li>Authenticates the user with Google only when the user clicks Authenticate</li>
+          <li>Lists Google Drive folders and files for browsing and selection</li>
+          <li>Downloads or exports only the user selected file to enable attachment through supported upload interfaces</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Why Google Drive access is needed</h2>
+        <ul>
+          <li>To list files and folders so the user can choose a file</li>
+          <li>To download the chosen file, or export Google Docs formats to standard formats such as PDF or DOCX</li>
+          <li>Scope is read only and used only for the described functionality</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Permissions and scope</h2>
+        <ul>
+          <li>Google OAuth scope: Google Drive read only</li>
+          <li>No write, delete, or modify operations are performed on user Drive content</li>
+          <li>No third party analytics or tracking is used</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h2>Policy and support</h2>
+        <ul>
+          <li>Privacy policy on this domain: <a href="extension-privacy.html">extension-privacy.html</a></li>
+          <li>Canonical policy repository: <a href="https://github.com/mjadeja816/drive-file-picker-privacy" target="_blank" rel="noopener">drive-file-picker-privacy</a></li>
+          <li>Contact: <a href="mailto:mahipaljadeja.cse@mnit.ac.in">mahipaljadeja.cse@mnit.ac.in</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div><a href="extension-privacy.html">Extension privacy policy</a></div>
+      <div>© <span id="y"></span> Mahipal Jadeja</div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
