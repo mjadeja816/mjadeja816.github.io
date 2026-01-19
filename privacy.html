@@ -1,4 +1,4 @@
-te<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -8,74 +8,121 @@ te<!doctype html>
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
-  <div class="container">
-    <div class="nav">
-      <div class="brand">Mahipal Jadeja</div>
-      <div class="links">
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="tools.html">Tools</a>
-        <a href="talks.html">Talks</a>
-        <a href="contact.html">Contact</a>
-        <a href="privacy.html">Extension Privacy</a>
-      </div>
-    </div>
+<div class="container">
+<div class="nav">
+<div class="brand">Mahipal Jadeja</div>
+<div class="links">
+<a href="index.html">Home</a>
+<a href="about.html">About</a>
+<a href="tools.html">Tools</a>
+<a href="talks.html">Talks</a>
+<a href="contact.html">Contact</a>
+<a href="privacy.html">Privacy</a>
+</div>
+</div>
 
-    <div class="hero">
-      <h1>Privacy Policy</h1>
-      <p>
-        This page provides the privacy policy for the Chrome extension listed on the Tools page and related tooling.
-        For the canonical privacy policy repository, see the GitHub link below.
-      </p>
-      <div class="cta">
-        <a class="btn btnPrimary" href="https://github.com/mjadeja816/drive-file-picker-privacy" target="_blank" rel="noopener">Open privacy policy repository</a>
-      </div>
-    </div>
+<div class="hero">
+<h1>Privacy Policy</h1>
+<p>
+This Privacy Policy describes how the Chrome extension
+<strong>Google Drive File Picker (ChatGPT Compatible)</strong>
+accesses, uses, and protects Google user data.
+</p>
+</div>
 
-    <div class="grid">
-      <div class="card">
-        <h2>Summary</h2>
-        <ul>
-          <li>No sale of personal data</li>
-          <li>No analytics or third party tracking</li>
-          <li>Permissions are used only to provide the described functionality</li>
-        </ul>
-      </div>
+<div class="grid">
 
-      <div class="card">
-        <h2>Data handling</h2>
-        <ul>
-          <li>The extension uses Google authentication only when the user clicks Authenticate</li>
-          <li>Google Drive access is read only and used to list and download files chosen by the user</li>
-          <li>No Drive files are stored on external servers by the extension</li>
-        </ul>
-      </div>
+<div class="card">
+<h2>Application Overview</h2>
+<p>
+The extension enables users to browse their own Google Drive,
+select files, and attach them to supported file upload interfaces
+such as ChatGPT. All actions are initiated explicitly by the user.
+</p>
+</div>
 
-      <div class="card">
-        <h2>What the extension does</h2>
-        <p>
-          The extension helps the user browse Google Drive, download a selected file, and attach it through supported file upload interfaces.
-          The user explicitly selects the file to attach.
-        </p>
-      </div>
+<div class="card">
+<h2>Data Accessed</h2>
+<p>The extension may access the following Google user data:</p>
+<ul>
+<li>Google Drive file metadata (file name, file type, file size, modification time)</li>
+<li>File content of a selected file, only when the user explicitly chooses to attach it</li>
+</ul>
+</div>
 
-      <div class="card">
-        <h2>Canonical policy</h2>
-        <p>
-          The authoritative and most up to date privacy policy is maintained here:
-          <a href="https://github.com/mjadeja816/drive-file-picker-privacy" target="_blank" rel="noopener">drive-file-picker-privacy</a>.
-        </p>
-      </div>
-    </div>
+<div class="card">
+<h2>Data Usage</h2>
+<p>Google user data is used strictly to:</p>
+<ul>
+<li>Display the user’s Google Drive file list</li>
+<li>Allow folder navigation and file search</li>
+<li>Temporarily download a user selected file</li>
+<li>Attach the selected file to a supported upload interface</li>
+</ul>
+</div>
 
-    <div class="footer">
-      <div><a href="index.html">Home</a></div>
-      <div>© <span id="y"></span> Mahipal Jadeja</div>
-    </div>
-  </div>
+<div class="card">
+<h2>Data Storage</h2>
+<ul>
+<li>No Google user data is stored on external servers</li>
+<li>All processing occurs locally within the user’s browser</li>
+<li>No files, metadata, or OAuth tokens are persisted after the session</li>
+</ul>
+</div>
 
-  <script>
-    document.getElementById("y").textContent = new Date().getFullYear();
-  </script>
+<div class="card">
+<h2>Data Sharing</h2>
+<ul>
+<li>No Google user data is shared with third parties</li>
+<li>No data is sold, rented, or monetized</li>
+<li>No analytics, tracking, or profiling is performed</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>OAuth & Authentication</h2>
+<p>
+The extension uses Google OAuth 2.0 via the Chrome Identity API.
+OAuth tokens are managed securely by Chrome and are never stored,
+logged, or transmitted by the developer.
+</p>
+</div>
+
+<div class="card">
+<h2>Advertising & AI Usage</h2>
+<ul>
+<li>No Google user data is used for advertising purposes</li>
+<li>No Google user data is used to train AI or machine learning models</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>User Control</h2>
+<ul>
+<li>Users may revoke Google Drive access at any time from their Google Account settings</li>
+<li>Uninstalling the extension immediately stops all data access</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>Contact</h2>
+<p>
+For questions or concerns regarding this privacy policy:
+<br>
+<strong>Email:</strong> mahipaljadeja.cse@mnit.ac.in
+</p>
+</div>
+
+</div>
+
+<div class="footer">
+<div><a href="index.html">Home</a></div>
+<div>© <span id="y"></span> Mahipal Jadeja</div>
+</div>
+</div>
+
+<script>
+document.getElementById("y").textContent = new Date().getFullYear();
+</script>
 </body>
 </html>
