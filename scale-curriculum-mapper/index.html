@@ -771,13 +771,59 @@
     }
 
     .site-footer {
-      display: flex;
-      justify-content: center;
-      padding: 18px 0 4px;
+      display: grid;
+      gap: 9px;
+      justify-items: center;
+      padding: 22px 0 4px;
       color: var(--muted);
       font-size: 0.84rem;
       font-weight: 750;
       text-align: center;
+    }
+
+    .creator-line {
+      color: var(--ink);
+      font-size: 0.95rem;
+      font-weight: 850;
+      line-height: 1.35;
+    }
+
+    .creator-line span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 750;
+    }
+
+    .creator-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .creator-links a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 7px 10px;
+      color: #0e3f38;
+      background: rgba(223, 244, 239, 0.72);
+      border: 1px solid rgba(15, 118, 110, 0.18);
+      border-radius: var(--radius);
+      text-decoration: none;
+      font-weight: 850;
+    }
+
+    .creator-links a:hover {
+      background: var(--teal-soft);
+      text-decoration: none;
+    }
+
+    .copyright {
+      font-size: 0.78rem;
+      line-height: 1.35;
     }
 
     @media (max-width: 1180px) {
@@ -1007,8 +1053,17 @@
       </aside>
     </section>
 
-    <footer class="site-footer">
-      Copyright (c) 2026 Dr. Mahipal Jadeja. All rights reserved.
+    <footer class="site-footer" aria-label="Creator information">
+      <div class="creator-line">
+        Created by Dr. Mahipal Jadeja
+        <span>Assistant Professor, MNIT Jaipur | AI in Education, Cybersecurity, Curriculum Design</span>
+      </div>
+      <nav class="creator-links" aria-label="Creator links">
+        <a href="/">mahipaljadeja.com</a>
+        <a href="/contact.html">Contact</a>
+        <a href="https://www.linkedin.com/in/mahipal12/" target="_blank" rel="noopener">LinkedIn</a>
+      </nav>
+      <div class="copyright">Copyright (c) 2026 Dr. Mahipal Jadeja. All rights reserved.</div>
     </footer>
   </main>
 
