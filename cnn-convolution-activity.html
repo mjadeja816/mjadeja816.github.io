@@ -1,0 +1,2710 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CNN Convolution Activity | Mahipal Jadeja</title>
+  <meta name="description" content="An interactive CNN teaching demonstration by Mahipal Jadeja covering convolution, image filters, stride, padding, feature maps, and pooling.">
+  <style>
+    :root {
+      --page: #f4f7f8;
+      --ink: #17212f;
+      --muted: #586678;
+      --surface: #ffffff;
+      --surface-soft: #eef4f2;
+      --line: #c8d3dc;
+      --line-strong: #8fa2b2;
+      --accent: #00796b;
+      --accent-strong: #00584f;
+      --accent-soft: #d8f1ec;
+      --blue: #2868b7;
+      --blue-soft: #dfeaff;
+      --coral: #c64b2f;
+      --coral-soft: #ffe3da;
+      --amber: #a66a00;
+      --amber-soft: #fff0c8;
+      --green: #2d7d46;
+      --shadow: 0 18px 45px rgba(23, 33, 47, 0.08);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.45;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .hero {
+      background: var(--surface);
+      border-bottom: 1px solid var(--line);
+      padding: 26px clamp(16px, 4vw, 48px) 18px;
+    }
+
+    .site-return {
+      max-width: 1180px;
+      margin: 0 auto 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .site-return a {
+      color: var(--accent-strong);
+      text-decoration: none;
+    }
+
+    .site-return a:hover {
+      text-decoration: underline;
+    }
+
+    .hero-inner {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(240px, 0.8fr);
+      gap: 22px;
+      align-items: end;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+      line-height: 1.12;
+      letter-spacing: 0;
+      font-weight: 700;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: 1.18rem;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    h3 {
+      margin: 0;
+      font-size: 1rem;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    .subtitle {
+      margin-top: 8px;
+      color: var(--muted);
+      max-width: 760px;
+    }
+
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      background: var(--surface-soft);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      min-height: 76px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.2rem;
+      color: var(--accent-strong);
+      line-height: 1.1;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    main {
+      width: min(1180px, calc(100% - 32px));
+      margin: 18px auto 28px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .activity-contact {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto 30px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .activity-contact-inner {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .activity-contact h2 {
+      margin: 0 0 5px;
+      font-size: 1.05rem;
+    }
+
+    .activity-contact p {
+      color: var(--muted);
+      max-width: 720px;
+    }
+
+    .activity-contact-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .activity-contact-actions .action-button {
+      display: inline-flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .linkedin-follow {
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 9px 16px;
+      border-radius: 999px;
+      background: #0a66c2;
+      color: #ffffff;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 0.9rem;
+    }
+
+    .linkedin-follow:hover {
+      background: #004182;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .tab-button {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--ink);
+      padding: 10px 14px;
+      min-height: 44px;
+      font-weight: 700;
+    }
+
+    .tab-button[aria-selected="true"] {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+    }
+
+    .activity {
+      display: none;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .activity.active {
+      display: block;
+    }
+
+    .activity-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: center;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      background: #fbfcfd;
+    }
+
+    .activity-head p {
+      color: var(--muted);
+      margin-top: 5px;
+      max-width: 800px;
+    }
+
+    .activity-body {
+      padding: 18px;
+    }
+
+    .operation-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 0.9fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .oned-panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 14px;
+      margin-bottom: 18px;
+    }
+
+    .oned-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(260px, 0.75fr);
+      gap: 14px;
+      align-items: start;
+      margin-top: 12px;
+    }
+
+    .filter-showcase-panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 14px;
+      margin-bottom: 18px;
+    }
+
+    .filter-showcase-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(180px, auto);
+      gap: 12px;
+      align-items: start;
+      margin-bottom: 12px;
+    }
+
+    .filter-showcase-head p {
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    .filter-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .filter-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfcfd;
+      padding: 10px;
+      min-width: 0;
+      display: grid;
+      gap: 8px;
+      align-content: start;
+    }
+
+    .filter-card canvas {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      display: block;
+      border-radius: 6px;
+      border: 1px solid var(--line);
+      background: var(--surface-soft);
+    }
+
+    .filter-card h3 {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .filter-card p {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .kernel-pill {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 3px 7px;
+      color: var(--accent-strong);
+      background: var(--accent-soft);
+      font-size: 0.76rem;
+      white-space: nowrap;
+      font-weight: 700;
+    }
+
+    .filter-kernel-wrap {
+      display: grid;
+      gap: 5px;
+    }
+
+    .kernel-mini {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 3px;
+      max-width: 132px;
+    }
+
+    .kernel-value {
+      min-height: 26px;
+      border: 1px solid var(--line);
+      border-radius: 5px;
+      background: var(--surface);
+      display: grid;
+      place-items: center;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 0.72rem;
+      color: var(--ink);
+      font-weight: 700;
+    }
+
+    .kernel-note {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .shape-layout {
+      display: grid;
+      grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1.28fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .shape-progress {
+      display: grid;
+      gap: 14px;
+    }
+
+    .lesson-panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 14px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .lesson-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .step-kicker {
+      display: inline-block;
+      color: var(--accent-strong);
+      font-weight: 700;
+      font-size: 0.82rem;
+      margin-bottom: 4px;
+    }
+
+    .lesson-head p {
+      color: var(--muted);
+      margin-top: 5px;
+    }
+
+    .lesson-grid {
+      display: grid;
+      grid-template-columns: minmax(260px, 0.72fr) minmax(0, 1.28fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .lesson-controls {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfcfd;
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .lesson-visual {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 12px;
+      min-width: 0;
+    }
+
+    .mini-visuals {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.86fr);
+      gap: 12px;
+      align-items: start;
+    }
+
+    .volume-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(150px, 0.56fr) minmax(0, 1fr);
+      gap: 12px;
+      align-items: center;
+    }
+
+    .slice-stack,
+    .map-stack {
+      min-height: 150px;
+      position: relative;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfcfd;
+      overflow: hidden;
+    }
+
+    .slice-card,
+    .map-card,
+    .filter-volume-card {
+      position: absolute;
+      border: 1px solid var(--line-strong);
+      border-radius: 6px;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      color: var(--ink);
+      background: var(--blue-soft);
+      min-width: 68px;
+      min-height: 54px;
+    }
+
+    .map-card {
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+    }
+
+    .filter-volume-card {
+      position: relative;
+      min-height: 92px;
+      background: var(--coral-soft);
+      color: var(--coral);
+      width: 100%;
+    }
+
+    .arrow-label {
+      text-align: center;
+      color: var(--muted);
+      font-weight: 700;
+      display: grid;
+      gap: 6px;
+    }
+
+    .control-panel,
+    .visual-panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      min-width: 0;
+    }
+
+    .control-panel {
+      padding: 14px;
+    }
+
+    .visual-panel {
+      padding: 14px;
+    }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: end;
+    }
+
+    .field {
+      display: grid;
+      gap: 6px;
+      min-width: 150px;
+    }
+
+    .field.compact {
+      min-width: 104px;
+    }
+
+    label,
+    .field-title {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    select,
+    input[type="number"],
+    input[type="range"] {
+      width: 100%;
+    }
+
+    select,
+    input[type="number"] {
+      border: 1px solid var(--line-strong);
+      border-radius: 6px;
+      background: var(--surface);
+      color: var(--ink);
+      min-height: 40px;
+      padding: 7px 9px;
+    }
+
+    input[type="range"] {
+      accent-color: var(--accent);
+    }
+
+    .button-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .action-button {
+      border: 1px solid var(--line-strong);
+      background: var(--surface);
+      color: var(--ink);
+      border-radius: var(--radius);
+      min-height: 40px;
+      padding: 8px 12px;
+      font-weight: 700;
+    }
+
+    .action-button.primary {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    .action-button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .grid-stage {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(180px, 0.46fr) minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .stage-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
+      min-height: 28px;
+    }
+
+    .stage-title span {
+      color: var(--muted);
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    .matrix {
+      display: grid;
+      gap: 4px;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .speed-strip {
+      display: grid;
+      gap: 6px;
+      width: 100%;
+      min-width: 0;
+    }
+
+    .reading-strip .speed-cell {
+      aspect-ratio: 1.65 / 1;
+      min-height: 58px;
+    }
+
+    .cell,
+    .speed-cell,
+    .oned-weight-cell,
+    .kernel-cell,
+    .feature-cell,
+    .shape-cell,
+    .pool-cell {
+      aspect-ratio: 1 / 1;
+      border: 1px solid rgba(31, 47, 63, 0.22);
+      border-radius: 5px;
+      display: grid;
+      place-items: center;
+      min-width: 0;
+      font-size: 0.76rem;
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .speed-cell {
+      background: var(--blue-soft);
+      color: #153e75;
+      border-color: #9bbbe6;
+      min-height: 46px;
+    }
+
+    .speed-cell.active {
+      outline: 3px solid var(--coral);
+      outline-offset: -3px;
+      color: var(--ink);
+    }
+
+    .speed-cell.center-cell::after {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--coral);
+      position: absolute;
+      right: 4px;
+      top: 4px;
+    }
+
+    .speed-cell.output-cell {
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+    }
+
+    .speed-cell.pending {
+      color: var(--muted);
+      background: #f5f7f8;
+      border-style: dashed;
+    }
+
+    .speed-cell.current {
+      outline: 3px solid var(--accent);
+      outline-offset: -3px;
+    }
+
+    .oned-weight-cell {
+      background: var(--surface-soft);
+      border-color: var(--line-strong);
+      color: var(--ink);
+      min-height: 58px;
+    }
+
+    .oned-weight-cell input {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: transparent;
+      text-align: center;
+      color: inherit;
+      font-weight: 700;
+      padding: 0;
+    }
+
+    .cell.active {
+      outline: 3px solid var(--coral);
+      outline-offset: -3px;
+      z-index: 1;
+    }
+
+    .cell.center-cell::after {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--coral);
+      position: absolute;
+      right: 4px;
+      top: 4px;
+    }
+
+    .kernel-cell {
+      background: var(--surface-soft);
+      border-color: var(--line-strong);
+      color: var(--ink);
+    }
+
+    .kernel-cell input {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      background: transparent;
+      text-align: center;
+      color: inherit;
+      font-weight: 700;
+      padding: 0;
+    }
+
+    .kernel-cell input:disabled {
+      color: inherit;
+      opacity: 1;
+    }
+
+    .feature-cell {
+      background: #edf3f5;
+      color: var(--ink);
+      min-height: 42px;
+    }
+
+    .feature-cell.pending {
+      color: var(--muted);
+      background: #f5f7f8;
+      border-style: dashed;
+    }
+
+    .feature-cell.current {
+      outline: 3px solid var(--accent);
+      outline-offset: -3px;
+    }
+
+    .calc-strip {
+      margin-top: 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .calc-line {
+      border-left: 4px solid var(--accent);
+      background: var(--accent-soft);
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 10px 12px;
+      color: var(--accent-strong);
+      font-weight: 700;
+    }
+
+    .products {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .equation-box {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: #fbfcfd;
+      padding: 10px 12px;
+      margin-top: 12px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .product-chip {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 8px;
+      background: #fbfcfd;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .concept-row {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .concept {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 10px;
+      min-height: 90px;
+      background: #fbfcfd;
+    }
+
+    .concept b {
+      display: block;
+      color: var(--ink);
+      margin-bottom: 4px;
+    }
+
+    .concept span {
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .shape-controls {
+      display: grid;
+      gap: 12px;
+    }
+
+    .control-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .range-value {
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .formula-box {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 11px;
+      background: #fbfcfd;
+      display: grid;
+      gap: 8px;
+    }
+
+    .formula {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 0.84rem;
+      color: var(--ink);
+      overflow-wrap: anywhere;
+    }
+
+    .warning {
+      color: var(--amber);
+      background: var(--amber-soft);
+      border-left: 4px solid var(--amber);
+      padding: 8px 10px;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      font-size: 0.88rem;
+    }
+
+    .result-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .metric {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 10px;
+      background: #fbfcfd;
+      min-height: 78px;
+    }
+
+    .metric b {
+      display: block;
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin-bottom: 4px;
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.18rem;
+      color: var(--accent-strong);
+      line-height: 1.15;
+    }
+
+    .shape-visuals {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .shape-cell {
+      background: #f9fbfc;
+      color: var(--muted);
+      border-color: #d1dbe3;
+      min-height: 24px;
+      font-size: 0.64rem;
+    }
+
+    .shape-cell.real {
+      background: var(--blue-soft);
+      color: #153e75;
+      border-color: #9bbbe6;
+    }
+
+    .shape-cell.pad {
+      background: #f2f4f5;
+      color: #8895a7;
+      border-style: dashed;
+    }
+
+    .shape-cell.covered {
+      outline: 2px solid var(--coral);
+      outline-offset: -2px;
+      color: var(--ink);
+    }
+
+    .shape-cell.start {
+      background: var(--coral-soft);
+      color: var(--coral);
+    }
+
+    .shape-cell.valid-start::after {
+      content: "";
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: var(--accent);
+      position: absolute;
+      right: 3px;
+      bottom: 3px;
+    }
+
+    .pool-wrap {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.78fr);
+      gap: 12px;
+      align-items: start;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .pool-cell {
+      min-height: 32px;
+      background: #f7faf9;
+      border-color: #c9d8d4;
+      color: var(--ink);
+    }
+
+    .pool-cell.pool-covered {
+      outline: 3px solid var(--accent);
+      outline-offset: -3px;
+    }
+
+    .pool-cell.pool-output {
+      background: var(--accent-soft);
+      color: var(--accent-strong);
+    }
+
+    .pool-cell.pool-current {
+      outline: 3px solid var(--coral);
+      outline-offset: -3px;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .swatch {
+      width: 13px;
+      height: 13px;
+      border-radius: 3px;
+      border: 1px solid var(--line-strong);
+      display: inline-block;
+    }
+
+    .swatch.real {
+      background: var(--blue-soft);
+    }
+
+    .swatch.pad {
+      background: #f2f4f5;
+      border-style: dashed;
+    }
+
+    .swatch.start {
+      background: var(--coral-soft);
+    }
+
+    .small-note {
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    @media (max-width: 980px) {
+      .hero-inner,
+      .oned-layout,
+      .filter-showcase-head,
+      .operation-layout,
+      .shape-layout,
+      .lesson-head,
+      .lesson-grid,
+      .mini-visuals,
+      .volume-row,
+      .grid-stage,
+      .shape-visuals,
+      .pool-wrap {
+        grid-template-columns: 1fr;
+      }
+
+      .activity-head {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      h1 {
+        font-size: 1.55rem;
+      }
+
+      main {
+        width: min(100% - 20px, 1180px);
+      }
+
+      .hero {
+        padding-inline: 14px;
+      }
+
+      .activity-body,
+      .activity-head {
+        padding: 14px;
+      }
+
+      .hero-stats,
+      .filter-grid,
+      .concept-row,
+      .control-grid,
+      .result-metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .cell,
+      .speed-cell,
+      .oned-weight-cell,
+      .kernel-cell,
+      .feature-cell {
+        font-size: 0.68rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <div class="site-return">
+        <a href="teaching-demonstrations.html">Teaching Demonstrations</a>
+        <a href="index.html">mahipaljadeja.com</a>
+      </div>
+      <div class="hero-inner">
+        <div>
+          <h1>CNN Convolution Activity</h1>
+          <p class="subtitle">A hands-on route from sliding weighted neighborhoods to output shapes, stride, padding, filter count, and pooling.</p>
+        </div>
+        <div class="hero-stats" aria-label="Activity focus">
+          <div class="stat">
+            <strong>1</strong>
+            <span>Filter placement creates one feature-map value.</span>
+          </div>
+          <div class="stat">
+            <strong>2</strong>
+            <span>Shape is controlled by filter size, padding, stride, and pooling.</span>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <div class="tabs" role="tablist" aria-label="CNN activity sections">
+        <button class="tab-button" id="tab-operation" type="button" role="tab" aria-selected="true" aria-controls="operation-panel" data-tab="operation">Convolution Operation</button>
+        <button class="tab-button" id="tab-shape" type="button" role="tab" aria-selected="false" aria-controls="shape-panel" data-tab="shape">Shape, Stride, Padding, Pooling</button>
+      </div>
+
+      <section class="activity active" id="operation-panel" role="tabpanel" aria-labelledby="tab-operation">
+        <div class="activity-head">
+          <div>
+            <h2>From 1D Speed Readings To 2D Feature Maps</h2>
+            <p>A cricket speed gun captures a short burst of rapid readings for each ball. A 3-reading weighted window slides over that burst, and the same sliding-window idea then extends to 2D neighborhoods.</p>
+          </div>
+          <div class="button-row">
+            <button class="action-button" id="cricketPrev" type="button" aria-label="Previous 1D window">&larr;</button>
+            <button class="action-button primary" id="cricketPlay" type="button">Play</button>
+            <button class="action-button" id="cricketNext" type="button" aria-label="Next 1D window">&rarr;</button>
+          </div>
+        </div>
+
+        <div class="activity-body">
+          <div class="oned-panel">
+            <div>
+              <h3>1D Convolution: Cricket Speed Gun</h3>
+              <p class="small-note">Each delivery has five quick readings. A 3-reading window slides across them, giving the newest reading in the window the largest weight.</p>
+            </div>
+            <div class="oned-layout">
+              <div>
+                <div class="toolbar" style="margin-bottom: 12px;">
+                  <div class="field">
+                    <label for="cricketPositionRange">Selected ball <span class="range-value" id="cricketPositionLabel">1 / 6</span></label>
+                    <input id="cricketPositionRange" type="range" min="0" max="5" value="0">
+                  </div>
+                  <div class="field">
+                    <label for="cricketWindowRange">Window position <span class="range-value" id="cricketWindowLabel">1 / 3</span></label>
+                    <input id="cricketWindowRange" type="range" min="0" max="2" value="0">
+                  </div>
+                  <div class="field">
+                    <label for="cricketPreset">Weight pattern</label>
+                    <select id="cricketPreset">
+                      <option value="smooth" selected>Recent-weighted smoother</option>
+                      <option value="current">Strong recent-reading emphasis</option>
+                      <option value="recent">Balanced recent bias</option>
+                      <option value="custom">Custom weights</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="stage-title">
+                  <h3>Rapid readings for this ball</h3>
+                  <span id="speedStripLabel">Ball 1</span>
+                </div>
+                <div class="speed-strip reading-strip" id="speedStrip" aria-label="Cricket speed gun readings"></div>
+
+                <div class="equation-box">
+                  <div class="formula">y[j] = w1*r[j] + w2*r[j+1] + w3*r[j+2]</div>
+                  <div class="calc-line" id="cricketEquation">ball 1 = 0</div>
+                  <div class="products" id="cricketProducts" aria-label="Current 1D convolution products"></div>
+                </div>
+              </div>
+
+              <div>
+                <div class="stage-title">
+                  <h3>Weighted window</h3>
+                  <span>early to recent</span>
+                </div>
+                <div class="speed-strip" id="cricketWeightStrip" aria-label="1D convolution weights"></div>
+
+                <div class="stage-title" style="margin-top: 14px;">
+                  <h3>Sliding outputs</h3>
+                  <span id="cricketOutputLabel">3 window outputs</span>
+                </div>
+                <div class="speed-strip" id="cricketOutputStrip" aria-label="1D convolution output estimates"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-showcase-panel">
+            <div class="filter-showcase-head">
+              <div>
+                <h3>What Filters Are Trying To Do</h3>
+                <p>The same original image can be transformed in different ways depending on the filter weights. In CNNs, these useful filters are learned from data instead of hand-picked.</p>
+              </div>
+              <div class="formula-box">
+                <h3>Broad idea</h3>
+                <p class="small-note">A filter is a small pattern detector or image operator that is reused across the whole image.</p>
+              </div>
+            </div>
+
+            <div class="filter-grid" aria-label="Concrete image filter examples">
+              <div class="filter-card">
+                <canvas id="filterOriginalCanvas" width="360" height="270" aria-label="Original cricket practice image"></canvas>
+                <h3>Original <span class="kernel-pill">source</span></h3>
+                <div class="kernel-note">No filter applied</div>
+                <p>A small practice-net scene with edges, texture, and smooth regions. The three filters below all start from this same image.</p>
+              </div>
+              <div class="filter-card">
+                <canvas id="filterBlurCanvas" width="360" height="270" aria-label="Blur filter output"></canvas>
+                <h3>Blur <span class="kernel-pill">smooth</span></h3>
+                <div class="filter-kernel-wrap" aria-label="Blur filter values">
+                  <div class="kernel-mini">
+                    <span class="kernel-value">1/9</span>
+                    <span class="kernel-value">1/9</span>
+                    <span class="kernel-value">1/9</span>
+                    <span class="kernel-value">1/9</span>
+                    <span class="kernel-value">1/9</span>
+                    <span class="kernel-value">1/9</span>
+                    <span class="kernel-value">1/9</span>
+                    <span class="kernel-value">1/9</span>
+                    <span class="kernel-value">1/9</span>
+                  </div>
+                  <div class="kernel-note">Each neighbor contributes equally.</div>
+                </div>
+                <p>Reduces small noisy changes and softens detail. Useful before later processing when tiny variations should not dominate.</p>
+              </div>
+              <div class="filter-card">
+                <canvas id="filterEdgeCanvas" width="360" height="270" aria-label="Edge detector output"></canvas>
+                <h3>Edge detector <span class="kernel-pill">boundary</span></h3>
+                <div class="filter-kernel-wrap" aria-label="Edge detector filter values">
+                  <div class="kernel-mini">
+                    <span class="kernel-value">-1</span>
+                    <span class="kernel-value">-1</span>
+                    <span class="kernel-value">-1</span>
+                    <span class="kernel-value">-1</span>
+                    <span class="kernel-value">8</span>
+                    <span class="kernel-value">-1</span>
+                    <span class="kernel-value">-1</span>
+                    <span class="kernel-value">-1</span>
+                    <span class="kernel-value">-1</span>
+                  </div>
+                  <div class="kernel-note">Center is compared against neighbors.</div>
+                </div>
+                <p>Highlights where brightness changes sharply. Useful for locating outlines such as the ball, bat, crease, or object boundaries.</p>
+              </div>
+              <div class="filter-card">
+                <canvas id="filterSharpenCanvas" width="360" height="270" aria-label="Sharpen filter output"></canvas>
+                <h3>Sharpen <span class="kernel-pill">detail</span></h3>
+                <div class="filter-kernel-wrap" aria-label="Sharpen filter values">
+                  <div class="kernel-mini">
+                    <span class="kernel-value">0</span>
+                    <span class="kernel-value">-1</span>
+                    <span class="kernel-value">0</span>
+                    <span class="kernel-value">-1</span>
+                    <span class="kernel-value">5</span>
+                    <span class="kernel-value">-1</span>
+                    <span class="kernel-value">0</span>
+                    <span class="kernel-value">-1</span>
+                    <span class="kernel-value">0</span>
+                  </div>
+                  <div class="kernel-note">Center is boosted, close neighbors subtract.</div>
+                </div>
+                <p>Boosts local contrast so details look crisper. Useful when boundaries and fine texture need to stand out more strongly.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="operation-layout">
+          <div class="visual-panel">
+            <div class="toolbar" style="margin-bottom: 14px;">
+              <div class="field">
+                <label for="filterSelect">Filter behavior</label>
+                <select id="filterSelect">
+                  <option value="average">Local smoother</option>
+                  <option value="drip">Drip-line finder</option>
+                  <option value="hotspot">Hotspot contrast</option>
+                  <option value="custom">Custom weights</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="positionRange">Filter position <span class="range-value" id="positionLabel">1 / 16</span></label>
+                <input id="positionRange" type="range" min="0" max="15" value="0">
+              </div>
+              <div class="button-row">
+                <button class="action-button" id="prevStep" type="button" aria-label="Previous 2D filter position">&larr;</button>
+                <button class="action-button primary" id="playStep" type="button">Play 2D</button>
+                <button class="action-button" id="nextStep" type="button" aria-label="Next 2D filter position">&rarr;</button>
+              </div>
+            </div>
+
+            <div class="grid-stage">
+              <div>
+                <div class="stage-title">
+                  <h3>Input field</h3>
+                  <span>6 x 6 readings</span>
+                </div>
+                <div class="matrix" id="inputGrid" aria-label="Greenhouse sensor input grid"></div>
+              </div>
+
+              <div>
+                <div class="stage-title">
+                  <h3>Filter</h3>
+                  <span>3 x 3</span>
+                </div>
+                <div class="matrix" id="kernelGrid" aria-label="Filter weight grid"></div>
+              </div>
+
+              <div>
+                <div class="stage-title">
+                  <h3>Feature map</h3>
+                  <span id="featureSizeLabel">4 x 4</span>
+                </div>
+                <div class="matrix" id="featureGrid" aria-label="Convolution feature map grid"></div>
+              </div>
+            </div>
+
+            <div class="calc-strip">
+              <div class="calc-line" id="calcLine">sum = 0</div>
+              <div class="products" id="productList" aria-label="Current weighted products"></div>
+            </div>
+          </div>
+
+          <aside class="control-panel">
+            <h3>What To Notice</h3>
+            <div class="concept-row" style="grid-template-columns: 1fr; margin-top: 10px;">
+              <div class="concept">
+                <b>Neighborhood</b>
+                <span>The highlighted 3 x 3 patch is the only local context used for the current output cell.</span>
+              </div>
+              <div class="concept">
+                <b>Shared filter</b>
+                <span>The same 9 weights are reused at every location, so the operation searches for the same pattern everywhere.</span>
+              </div>
+              <div class="concept">
+                <b>Feature map</b>
+                <span>Moving the filter over all valid positions fills a new grid of responses.</span>
+              </div>
+            </div>
+          </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="activity" id="shape-panel" role="tabpanel" aria-labelledby="tab-shape">
+        <div class="activity-head">
+          <div>
+            <h2>Shape Lab: Build The Formula Step By Step</h2>
+            <p>Walk through the lecture sequence: normal filter shrinkage, stride, padding and floor, depth from K filters, then pooling.</p>
+          </div>
+          <button class="action-button" id="resetShape" type="button">Reset</button>
+        </div>
+
+        <div class="activity-body shape-progress">
+          <article class="lesson-panel">
+            <div class="lesson-head">
+              <div>
+                <span class="step-kicker">Step 1</span>
+                <h3>Normal filter: output shrinks at the boundary</h3>
+                <p>With stride 1 and no padding, the filter cannot start where it would fall outside the input.</p>
+              </div>
+              <div class="metric">
+                <b>Filter-only output</b>
+                <strong id="normalShapeMetric">4 x 4</strong>
+              </div>
+            </div>
+            <div class="lesson-grid">
+              <div class="lesson-controls">
+                <div class="control-grid">
+                  <div class="field compact">
+                    <label for="normalSizeControl">Input side N <span class="range-value" id="normalSizeValue">6</span></label>
+                    <input id="normalSizeControl" type="range" min="5" max="8" value="6">
+                  </div>
+                  <div class="field compact">
+                    <label for="normalFilterControl">Filter size F</label>
+                    <select id="normalFilterControl">
+                      <option value="2">2 x 2</option>
+                      <option value="3" selected>3 x 3</option>
+                      <option value="5">5 x 5</option>
+                    </select>
+                  </div>
+                  <div class="field compact">
+                    <label for="normalStartControl">Start marker <span class="range-value" id="normalStartValue">1 / 16</span></label>
+                    <input id="normalStartControl" type="range" min="0" max="15" value="0">
+                  </div>
+                </div>
+                <div class="formula-box">
+                  <h3>Filter-only rule</h3>
+                  <div class="formula" id="normalFormula">W2 = H2 = N - F + 1</div>
+                  <p class="small-note">A 3 x 3 filter loses one border cell on every side, so 6 becomes 4.</p>
+                </div>
+              </div>
+              <div class="lesson-visual mini-visuals">
+                <div>
+                  <div class="stage-title">
+                    <h3>Input</h3>
+                    <span id="normalInputLabel">6 x 6</span>
+                  </div>
+                  <div class="matrix" id="normalInputGrid" aria-label="Normal filter input grid"></div>
+                </div>
+                <div>
+                  <div class="stage-title">
+                    <h3>Output starts</h3>
+                    <span id="normalOutputLabel">4 x 4</span>
+                  </div>
+                  <div class="matrix" id="normalOutputGrid" aria-label="Normal filter output grid"></div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="lesson-panel">
+            <div class="lesson-head">
+              <div>
+                <span class="step-kicker">Step 2</span>
+                <h3>Stride: take larger steps between starts</h3>
+                <p>Stride does not change the filter. It changes how many legal starts you actually visit.</p>
+              </div>
+              <div class="metric">
+                <b>Stride output</b>
+                <strong id="strideShapeMetric">2 x 2</strong>
+              </div>
+            </div>
+            <div class="lesson-grid">
+              <div class="lesson-controls">
+                <div class="control-grid">
+                  <div class="field compact">
+                    <label for="strideStepControl">Stride S</label>
+                    <select id="strideStepControl">
+                      <option value="1">1</option>
+                      <option value="2" selected>2</option>
+                      <option value="3">3</option>
+                    </select>
+                  </div>
+                  <div class="field compact">
+                    <label for="strideStartControl">Visited start <span class="range-value" id="strideStartValue">1 / 4</span></label>
+                    <input id="strideStartControl" type="range" min="0" max="3" value="0">
+                  </div>
+                </div>
+                <div class="formula-box">
+                  <h3>Stride intuition</h3>
+                  <div class="formula" id="strideFormula">W2 = H2 = floor((N - F) / S) + 1</div>
+                  <p class="small-note">Stride 2 roughly halves the number of starts. Floor keeps only full filter placements.</p>
+                </div>
+              </div>
+              <div class="lesson-visual mini-visuals">
+                <div>
+                  <div class="stage-title">
+                    <h3>Visited starts</h3>
+                    <span id="strideInputLabel">S = 2</span>
+                  </div>
+                  <div class="matrix" id="strideInputGrid" aria-label="Stride input grid"></div>
+                </div>
+                <div>
+                  <div class="stage-title">
+                    <h3>Stride output</h3>
+                    <span id="strideOutputLabel">2 x 2</span>
+                  </div>
+                  <div class="matrix" id="strideOutputGrid" aria-label="Stride output grid"></div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="lesson-panel">
+            <div class="lesson-head">
+              <div>
+                <span class="step-kicker">Step 3</span>
+                <h3>Padding: add a border before filtering</h3>
+                <p>Padding gives boundary cells enough artificial neighbors, then stride and floor decide the final count.</p>
+              </div>
+              <div class="metric">
+                <b>With padding</b>
+                <strong id="paddingShapeMetric">3 x 3</strong>
+              </div>
+            </div>
+            <div class="lesson-grid">
+              <div class="lesson-controls">
+                <div class="control-grid">
+                  <div class="field compact">
+                    <label for="paddingAmountControl">Padding P <span class="range-value" id="paddingValue">1</span></label>
+                    <input id="paddingAmountControl" type="range" min="0" max="3" value="1">
+                  </div>
+                  <div class="field compact">
+                    <label for="paddingStrideControl">Stride S</label>
+                    <select id="paddingStrideControl">
+                      <option value="1">1</option>
+                      <option value="2" selected>2</option>
+                      <option value="3">3</option>
+                    </select>
+                  </div>
+                  <div class="field compact">
+                    <label for="paddingStartControl">Start marker <span class="range-value" id="paddingStartValue">1 / 9</span></label>
+                    <input id="paddingStartControl" type="range" min="0" max="8" value="0">
+                  </div>
+                </div>
+                <div class="formula-box">
+                  <h3>Full spatial rule</h3>
+                  <div class="formula" id="paddingFormula">W2 = H2 = floor((N + 2P - F) / S) + 1</div>
+                  <p class="small-note" id="paddingSameNote">Padding adds P cells on every side, so the width gains 2P before filtering.</p>
+                  <p class="warning" id="paddingWarning" hidden>Partial border placement skipped by floor.</p>
+                </div>
+              </div>
+              <div class="lesson-visual mini-visuals">
+                <div>
+                  <div class="stage-title">
+                    <h3>Padded input</h3>
+                    <span id="paddingInputLabel">8 x 8</span>
+                  </div>
+                  <div class="matrix" id="paddingInputGrid" aria-label="Padding input grid"></div>
+                  <div class="legend">
+                    <span class="legend-item"><span class="swatch real"></span>Input</span>
+                    <span class="legend-item"><span class="swatch pad"></span>Padding</span>
+                    <span class="legend-item"><span class="swatch start"></span>Current start</span>
+                  </div>
+                </div>
+                <div>
+                  <div class="stage-title">
+                    <h3>Full-rule output</h3>
+                    <span id="paddingOutputLabel">3 x 3</span>
+                  </div>
+                  <div class="matrix" id="paddingOutputGrid" aria-label="Padding output grid"></div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="lesson-panel">
+            <div class="lesson-head">
+              <div>
+                <span class="step-kicker">Step 4</span>
+                <h3>3D input still uses 2D sliding</h3>
+                <p>A filter spans the full input depth, slides across width and height, and produces one 2D feature map. K filters produce depth K.</p>
+              </div>
+              <div class="metric">
+                <b>Output volume</b>
+                <strong id="volumeShapeMetric">3 x 3 x 4</strong>
+              </div>
+            </div>
+            <div class="lesson-grid">
+              <div class="lesson-controls">
+                <div class="control-grid">
+                  <div class="field compact">
+                    <label for="volumeDepthControl">Input depth D1 <span class="range-value" id="volumeDepthValue">3</span></label>
+                    <input id="volumeDepthControl" type="range" min="1" max="5" value="3">
+                  </div>
+                  <div class="field compact">
+                    <label for="volumeFilterCountControl">Filters K <span class="range-value" id="volumeFilterCountValue">4</span></label>
+                    <input id="volumeFilterCountControl" type="range" min="1" max="8" value="4">
+                  </div>
+                </div>
+                <div class="formula-box">
+                  <h3>Depth rule</h3>
+                  <div class="formula" id="volumeFormula">D2 = K</div>
+                  <p class="small-note" id="volumeParamNote">Each filter has F x F x D1 weights.</p>
+                </div>
+              </div>
+              <div class="lesson-visual">
+                <div class="volume-row">
+                  <div>
+                    <div class="stage-title">
+                      <h3>Input volume</h3>
+                      <span id="volumeInputLabel">6 x 6 x 3</span>
+                    </div>
+                    <div class="slice-stack" id="volumeInputStack" aria-label="Input volume slices"></div>
+                  </div>
+                  <div class="arrow-label">
+                    <div class="filter-volume-card" id="volumeFilterCard">3 x 3 x 3 filter</div>
+                    <span>slide only width and height</span>
+                  </div>
+                  <div>
+                    <div class="stage-title">
+                      <h3>Feature maps</h3>
+                      <span id="volumeOutputLabel">K maps</span>
+                    </div>
+                    <div class="map-stack" id="volumeOutputStack" aria-label="Output feature map stack"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="lesson-panel">
+            <div class="lesson-head">
+              <div>
+                <span class="step-kicker">Step 5</span>
+                <h3>Pooling: shrink each feature map without weights</h3>
+                <p>Pooling works per feature map. Max pooling keeps the strongest local response; average pooling keeps the local mean.</p>
+              </div>
+              <div class="metric">
+                <b>After pooling</b>
+                <strong id="poolShapeMetric">1 x 1 x 4</strong>
+              </div>
+            </div>
+            <div class="lesson-grid">
+              <div class="lesson-controls">
+                <div class="control-grid">
+                  <div class="field compact">
+                    <label for="poolModeProgress">Pooling type</label>
+                    <select id="poolModeProgress">
+                      <option value="max">Max</option>
+                      <option value="avg">Average</option>
+                    </select>
+                  </div>
+                  <div class="field compact">
+                    <label for="poolSizeProgress">Pool size</label>
+                    <select id="poolSizeProgress">
+                      <option value="2" selected>2 x 2</option>
+                      <option value="3">3 x 3</option>
+                    </select>
+                  </div>
+                  <div class="field compact">
+                    <label for="poolStrideProgress">Pool stride</label>
+                    <select id="poolStrideProgress">
+                      <option value="1">1</option>
+                      <option value="2" selected>2</option>
+                    </select>
+                  </div>
+                  <div class="field compact">
+                    <label for="poolStartProgress">Pool marker <span class="range-value" id="poolStartValue">1 / 1</span></label>
+                    <input id="poolStartProgress" type="range" min="0" max="0" value="0">
+                  </div>
+                </div>
+                <div class="formula-box">
+                  <h3>Pooling rule</h3>
+                  <div class="formula" id="poolFormula">P2 = floor((N2 - R) / S_pool) + 1</div>
+                  <p class="small-note" id="poolNote">Pooling has 0 learned parameters and keeps depth K.</p>
+                </div>
+              </div>
+              <div class="lesson-visual mini-visuals">
+                <div>
+                  <div class="stage-title">
+                    <h3>One feature map</h3>
+                    <span id="poolInputLabel">3 x 3</span>
+                  </div>
+                  <div class="matrix" id="poolInputGrid" aria-label="Pooling input feature map"></div>
+                </div>
+                <div>
+                  <div class="stage-title">
+                    <h3>Pooled map</h3>
+                    <span id="poolOutputLabel">1 x 1</span>
+                  </div>
+                  <div class="matrix" id="poolOutputGrid" aria-label="Pooled output map"></div>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+    <footer class="activity-contact" aria-label="Contact Mahipal Jadeja">
+      <div class="activity-contact-inner">
+        <div>
+          <h2>Use this in a class or workshop</h2>
+          <p>
+            Created by Dr. Mahipal Jadeja, Assistant Professor at MNIT Jaipur. For FDPs, keynotes, classroom demonstrations, or research discussions, write to
+            <a href="mailto:mahipaljadeja.cse@mnit.ac.in">mahipaljadeja.cse@mnit.ac.in</a>.
+          </p>
+        </div>
+        <div class="activity-contact-actions">
+          <a class="linkedin-follow"
+             href="https://www.linkedin.com/comm/mynetwork/discovery-see-all?usecase=PEOPLE_FOLLOWS&followMember=mahipal12"
+             target="_blank" rel="noopener">
+            Follow on LinkedIn
+          </a>
+          <a class="action-button" href="contact.html">Contact page</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    (() => {
+      const cricketReadings = [
+        [135, 137, 139, 138, 140],
+        [140, 141, 143, 144, 143],
+        [138, 139, 141, 140, 142],
+        [145, 146, 147, 149, 148],
+        [144, 145, 148, 147, 149],
+        [150, 151, 152, 154, 153]
+      ];
+      const cricketWeightPresets = {
+        smooth: [0.15, 0.3, 0.55],
+        current: [0.05, 0.15, 0.8],
+        recent: [0.2, 0.3, 0.5],
+        custom: [0.15, 0.3, 0.55]
+      };
+
+      const field = [
+        [42, 44, 47, 51, 52, 49],
+        [40, 43, 46, 55, 62, 58],
+        [39, 45, 57, 68, 75, 66],
+        [37, 49, 64, 79, 84, 70],
+        [35, 46, 58, 65, 67, 61],
+        [34, 39, 44, 51, 53, 50]
+      ];
+
+      const filters = {
+        average: {
+          label: "Local smoother",
+          weights: [
+            [0.11, 0.11, 0.11],
+            [0.11, 0.11, 0.11],
+            [0.11, 0.11, 0.11]
+          ]
+        },
+        drip: {
+          label: "Drip-line finder",
+          weights: [
+            [-1, 0, 1],
+            [-1, 0, 1],
+            [-1, 0, 1]
+          ]
+        },
+        hotspot: {
+          label: "Hotspot contrast",
+          weights: [
+            [-0.5, -0.5, -0.5],
+            [-0.5, 4, -0.5],
+            [-0.5, -0.5, -0.5]
+          ]
+        },
+        custom: {
+          label: "Custom weights",
+          weights: [
+            [0, -1, 0],
+            [-1, 5, -1],
+            [0, -1, 0]
+          ]
+        }
+      };
+
+      const state = {
+        tab: "operation",
+        cricketPreset: "smooth",
+        cricketStep: 0,
+        cricketWindow: 0,
+        cricketTimer: null,
+        filter: "average",
+        step: 0,
+        timer: null,
+        cricketCustomWeights: cricketWeightPresets.custom.slice(),
+        customWeights: filters.custom.weights.map((row) => row.slice()),
+        shape: {
+          size: 6,
+          depth: 3,
+          filterCount: 4,
+          filterSize: 3,
+          normalStart: 0,
+          stride: 2,
+          strideStart: 0,
+          padding: 1,
+          paddingStride: 2,
+          paddingStart: 0,
+          poolType: "max",
+          poolSize: 2,
+          poolStride: 2,
+          poolStart: 0
+        }
+      };
+
+      const $ = (id) => document.getElementById(id);
+
+      function formatNumber(value) {
+        if (!Number.isFinite(value)) return "0";
+        const rounded = Math.abs(value) >= 100 ? value.toFixed(0) : value.toFixed(1);
+        return rounded.replace(/\.0$/, "");
+      }
+
+      function formatWeight(value) {
+        if (!Number.isFinite(value)) return "0";
+        return value.toFixed(2).replace(/0$/, "").replace(/\.0$/, "");
+      }
+
+      function formatSpeedEstimate(value) {
+        if (!Number.isFinite(value)) return "0";
+        return value.toFixed(1).replace(/\.0$/, "");
+      }
+
+      function colorForValue(value, min, max) {
+        const span = Math.max(1, max - min);
+        const ratio = Math.max(0, Math.min(1, (value - min) / span));
+        const hue = 205 - ratio * 165;
+        const light = 92 - ratio * 28;
+        return `hsl(${hue} 72% ${light}%)`;
+      }
+
+      function featureColor(value, min, max) {
+        const abs = Math.max(Math.abs(min), Math.abs(max), 1);
+        const ratio = Math.min(1, Math.abs(value) / abs);
+        if (value < 0) {
+          return `hsl(211 70% ${94 - ratio * 34}%)`;
+        }
+        return `hsl(18 78% ${94 - ratio * 34}%)`;
+      }
+
+      function drawPracticeImage(ctx, width, height) {
+        ctx.clearRect(0, 0, width, height);
+        const sky = ctx.createLinearGradient(0, 0, 0, height * 0.55);
+        sky.addColorStop(0, "#d9edf7");
+        sky.addColorStop(1, "#f5f4d7");
+        ctx.fillStyle = sky;
+        ctx.fillRect(0, 0, width, height);
+
+        ctx.fillStyle = "#5aa06a";
+        ctx.fillRect(0, height * 0.52, width, height * 0.48);
+        ctx.fillStyle = "#cfa76e";
+        ctx.beginPath();
+        ctx.moveTo(width * 0.42, height * 0.55);
+        ctx.lineTo(width * 0.58, height * 0.55);
+        ctx.lineTo(width * 0.7, height);
+        ctx.lineTo(width * 0.3, height);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.strokeStyle = "rgba(255,255,255,0.85)";
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(width * 0.37, height * 0.72);
+        ctx.lineTo(width * 0.63, height * 0.72);
+        ctx.stroke();
+
+        ctx.fillStyle = "#5b341c";
+        [0.475, 0.5, 0.525].forEach((x) => {
+          ctx.fillRect(width * x - 3, height * 0.39, 6, height * 0.22);
+        });
+        ctx.fillStyle = "#8b5a2b";
+        ctx.fillRect(width * 0.46, height * 0.38, width * 0.08, 5);
+
+        ctx.save();
+        ctx.translate(width * 0.24, height * 0.54);
+        ctx.rotate(-0.42);
+        ctx.fillStyle = "#d8c39c";
+        ctx.fillRect(-7, -48, 14, 96);
+        ctx.restore();
+
+        const ballGradient = ctx.createRadialGradient(width * 0.68, height * 0.35, 3, width * 0.68, height * 0.35, 22);
+        ballGradient.addColorStop(0, "#ffbbb2");
+        ballGradient.addColorStop(0.58, "#d33f2f");
+        ballGradient.addColorStop(1, "#92251e");
+        ctx.fillStyle = ballGradient;
+        ctx.beginPath();
+        ctx.arc(width * 0.68, height * 0.35, 22, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "rgba(255,255,255,0.75)";
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(width * 0.675, height * 0.35, 13, -0.9, 0.9);
+        ctx.stroke();
+
+        ctx.strokeStyle = "rgba(31, 47, 63, 0.22)";
+        ctx.lineWidth = 1;
+        for (let x = 16; x < width; x += 32) {
+          ctx.beginPath();
+          ctx.moveTo(x, height * 0.08);
+          ctx.lineTo(x - 18, height * 0.98);
+          ctx.stroke();
+        }
+        for (let y = height * 0.1; y < height; y += 28) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(width, y + 8);
+          ctx.stroke();
+        }
+
+        const imageData = ctx.getImageData(0, 0, width, height);
+        const data = imageData.data;
+        for (let i = 0; i < data.length; i += 4) {
+          const noise = ((i * 17) % 19) - 9;
+          data[i] = Math.max(0, Math.min(255, data[i] + noise));
+          data[i + 1] = Math.max(0, Math.min(255, data[i + 1] + noise));
+          data[i + 2] = Math.max(0, Math.min(255, data[i + 2] + noise));
+        }
+        ctx.putImageData(imageData, 0, 0);
+      }
+
+      function applyImageKernel(source, width, height, kernel, divisor, bias, grayscaleOutput) {
+        const output = new ImageData(width, height);
+        const src = source.data;
+        const dst = output.data;
+        const weightSum = divisor || 1;
+        for (let y = 0; y < height; y += 1) {
+          for (let x = 0; x < width; x += 1) {
+            let red = 0;
+            let green = 0;
+            let blue = 0;
+            for (let ky = -1; ky <= 1; ky += 1) {
+              for (let kx = -1; kx <= 1; kx += 1) {
+                const sx = Math.max(0, Math.min(width - 1, x + kx));
+                const sy = Math.max(0, Math.min(height - 1, y + ky));
+                const sourceIndex = (sy * width + sx) * 4;
+                const kernelValue = kernel[ky + 1][kx + 1];
+                red += src[sourceIndex] * kernelValue;
+                green += src[sourceIndex + 1] * kernelValue;
+                blue += src[sourceIndex + 2] * kernelValue;
+              }
+            }
+            const targetIndex = (y * width + x) * 4;
+            if (grayscaleOutput) {
+              const magnitude = Math.max(0, Math.min(255, (Math.abs(red) + Math.abs(green) + Math.abs(blue)) / 3 + bias));
+              dst[targetIndex] = magnitude;
+              dst[targetIndex + 1] = magnitude;
+              dst[targetIndex + 2] = magnitude;
+            } else {
+              dst[targetIndex] = Math.max(0, Math.min(255, red / weightSum + bias));
+              dst[targetIndex + 1] = Math.max(0, Math.min(255, green / weightSum + bias));
+              dst[targetIndex + 2] = Math.max(0, Math.min(255, blue / weightSum + bias));
+            }
+            dst[targetIndex + 3] = 255;
+          }
+        }
+        return output;
+      }
+
+      function renderFilterShowcase() {
+        const originalCanvas = $("filterOriginalCanvas");
+        const blurCanvas = $("filterBlurCanvas");
+        const edgeCanvas = $("filterEdgeCanvas");
+        const sharpenCanvas = $("filterSharpenCanvas");
+        if (!originalCanvas || !blurCanvas || !edgeCanvas || !sharpenCanvas) return;
+        const width = originalCanvas.width;
+        const height = originalCanvas.height;
+        const originalContext = originalCanvas.getContext("2d", { willReadFrequently: true });
+        drawPracticeImage(originalContext, width, height);
+        const source = originalContext.getImageData(0, 0, width, height);
+        const blur = applyImageKernel(source, width, height, [
+          [1, 1, 1],
+          [1, 1, 1],
+          [1, 1, 1]
+        ], 9, 0, false);
+        const edge = applyImageKernel(source, width, height, [
+          [-1, -1, -1],
+          [-1, 8, -1],
+          [-1, -1, -1]
+        ], 1, 0, true);
+        const sharpen = applyImageKernel(source, width, height, [
+          [0, -1, 0],
+          [-1, 5, -1],
+          [0, -1, 0]
+        ], 1, 0, false);
+        blurCanvas.getContext("2d").putImageData(blur, 0, 0);
+        edgeCanvas.getContext("2d").putImageData(edge, 0, 0);
+        sharpenCanvas.getContext("2d").putImageData(sharpen, 0, 0);
+      }
+
+      function getWeights() {
+        if (state.filter === "custom") {
+          return state.customWeights.map((row) => row.slice());
+        }
+        return filters[state.filter].weights.map((row) => row.slice());
+      }
+
+      function computeFeatureMap(weights) {
+        const result = [];
+        for (let r = 0; r <= field.length - 3; r += 1) {
+          const row = [];
+          for (let c = 0; c <= field[0].length - 3; c += 1) {
+            let sum = 0;
+            for (let kr = 0; kr < 3; kr += 1) {
+              for (let kc = 0; kc < 3; kc += 1) {
+                sum += field[r + kr][c + kc] * weights[kr][kc];
+              }
+            }
+            row.push(sum);
+          }
+          result.push(row);
+        }
+        return result;
+      }
+
+      function setGridColumns(el, cols) {
+        el.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
+      }
+
+      function getCricketWeights() {
+        if (state.cricketPreset === "custom") {
+          return state.cricketCustomWeights.slice();
+        }
+        return cricketWeightPresets[state.cricketPreset].slice();
+      }
+
+      function computeCricketOutputs(weights) {
+        const readings = cricketReadings[state.cricketStep];
+        const outputs = [];
+        for (let start = 0; start <= readings.length - weights.length; start += 1) {
+          let sum = 0;
+          for (let offset = 0; offset < weights.length; offset += 1) {
+            sum += readings[start + offset] * weights[offset];
+          }
+          outputs.push(sum);
+        }
+        return outputs;
+      }
+
+      function renderCricketSpeeds() {
+        const strip = $("speedStrip");
+        const readings = cricketReadings[state.cricketStep];
+        const values = cricketReadings.flat();
+        const min = Math.min(...values);
+        const max = Math.max(...values);
+        setGridColumns(strip, readings.length);
+        strip.innerHTML = "";
+        $("speedStripLabel").textContent = `Ball ${state.cricketStep + 1}, window ${state.cricketWindow + 1}`;
+        readings.forEach((value, index) => {
+          const active = index >= state.cricketWindow && index < state.cricketWindow + 3;
+          const center = index === state.cricketWindow + 2;
+          const cell = document.createElement("div");
+          cell.className = `speed-cell${active ? " active" : ""}${center ? " center-cell" : ""}`;
+          cell.style.background = colorForValue(value, min, max);
+          cell.textContent = value;
+          const label = active ? (index === state.cricketWindow ? "older window" : index === state.cricketWindow + 1 ? "middle window" : "recent window") : "unselected";
+          cell.setAttribute("aria-label", `Ball ${state.cricketStep + 1} reading ${index + 1}: ${value} kilometers per hour, ${label}`);
+          strip.appendChild(cell);
+        });
+      }
+
+      function renderCricketWeights(weights) {
+        const strip = $("cricketWeightStrip");
+        const labels = ["w1 early", "w2 middle", "w3 recent"];
+        setGridColumns(strip, 3);
+        strip.innerHTML = "";
+        weights.forEach((value, index) => {
+          const cell = document.createElement("div");
+          cell.className = "oned-weight-cell";
+          const input = document.createElement("input");
+          input.type = "number";
+          input.step = "0.05";
+          input.value = value;
+          input.disabled = state.cricketPreset !== "custom";
+          input.setAttribute("aria-label", `${labels[index]} weight`);
+          input.addEventListener("input", () => {
+            const parsed = Number(input.value);
+            state.cricketCustomWeights[index] = Number.isFinite(parsed) ? parsed : 0;
+            renderCricket();
+          });
+          cell.appendChild(input);
+          strip.appendChild(cell);
+        });
+      }
+
+      function renderCricketOutputs(outputs) {
+        const strip = $("cricketOutputStrip");
+        const min = Math.min(...outputs);
+        const max = Math.max(...outputs);
+        setGridColumns(strip, outputs.length);
+        strip.innerHTML = "";
+        outputs.forEach((value, index) => {
+          const cell = document.createElement("div");
+          cell.className = `speed-cell output-cell${index === state.cricketWindow ? " current" : ""}`;
+          cell.style.background = featureColor(value, min, max);
+          cell.textContent = formatSpeedEstimate(value);
+          cell.setAttribute("aria-label", `Stable estimate for window ${index + 1}: ${formatSpeedEstimate(value)} kilometers per hour`);
+          strip.appendChild(cell);
+        });
+      }
+
+      function renderCricketEquation(weights, outputs) {
+        const ballIndex = state.cricketStep;
+        const readings = cricketReadings[ballIndex];
+        const windowStart = state.cricketWindow;
+        const terms = weights.map((weight, index) => {
+          const speed = readings[windowStart + index];
+          return `${formatWeight(weight)}*${speed}`;
+        });
+        $("cricketPositionRange").value = state.cricketStep;
+        $("cricketPositionLabel").textContent = `${state.cricketStep + 1} / ${cricketReadings.length}`;
+        $("cricketWindowRange").max = String(outputs.length - 1);
+        $("cricketWindowRange").value = state.cricketWindow;
+        $("cricketWindowLabel").textContent = `${state.cricketWindow + 1} / ${outputs.length}`;
+        $("cricketOutputLabel").textContent = `${outputs.length} window outputs`;
+        $("cricketEquation").textContent = `ball ${ballIndex + 1}, y[${windowStart + 1}] = ${terms.join(" + ")} = ${formatSpeedEstimate(outputs[windowStart])} km/h`;
+
+        const productLabels = ["early", "middle", "recent"];
+        const list = $("cricketProducts");
+        list.innerHTML = "";
+        weights.forEach((weight, index) => {
+          const speed = readings[windowStart + index];
+          const chip = document.createElement("span");
+          chip.className = "product-chip";
+          chip.textContent = `${productLabels[index]}: ${speed} x ${formatWeight(weight)} = ${formatSpeedEstimate(speed * weight)}`;
+          list.appendChild(chip);
+        });
+      }
+
+      function renderCricket() {
+        state.cricketStep = Math.min(state.cricketStep, cricketReadings.length - 1);
+        const weights = getCricketWeights();
+        const outputs = computeCricketOutputs(weights);
+        state.cricketWindow = Math.min(state.cricketWindow, outputs.length - 1);
+        renderCricketSpeeds();
+        renderCricketWeights(weights);
+        renderCricketOutputs(outputs);
+        renderCricketEquation(weights, outputs);
+      }
+
+      function renderInputGrid() {
+        const grid = $("inputGrid");
+        const stepRow = Math.floor(state.step / 4);
+        const stepCol = state.step % 4;
+        const values = field.flat();
+        const min = Math.min(...values);
+        const max = Math.max(...values);
+        setGridColumns(grid, 6);
+        grid.innerHTML = "";
+        field.forEach((row, r) => {
+          row.forEach((value, c) => {
+            const cell = document.createElement("div");
+            const active = r >= stepRow && r < stepRow + 3 && c >= stepCol && c < stepCol + 3;
+            const center = r === stepRow + 1 && c === stepCol + 1;
+            cell.className = `cell${active ? " active" : ""}${center ? " center-cell" : ""}`;
+            cell.style.background = colorForValue(value, min, max);
+            cell.textContent = value;
+            grid.appendChild(cell);
+          });
+        });
+      }
+
+      function renderKernelGrid() {
+        const grid = $("kernelGrid");
+        const weights = getWeights();
+        setGridColumns(grid, 3);
+        grid.innerHTML = "";
+        weights.forEach((row, r) => {
+          row.forEach((value, c) => {
+            const cell = document.createElement("div");
+            cell.className = "kernel-cell";
+            const input = document.createElement("input");
+            input.type = "number";
+            input.step = "0.1";
+            input.value = value;
+            input.disabled = state.filter !== "custom";
+            input.setAttribute("aria-label", `Filter weight row ${r + 1} column ${c + 1}`);
+            input.addEventListener("input", () => {
+              const parsed = Number(input.value);
+              state.customWeights[r][c] = Number.isFinite(parsed) ? parsed : 0;
+              renderOperation();
+            });
+            cell.appendChild(input);
+            grid.appendChild(cell);
+          });
+        });
+      }
+
+      function renderFeatureGrid(featureMap) {
+        const grid = $("featureGrid");
+        const values = featureMap.flat();
+        const min = Math.min(...values);
+        const max = Math.max(...values);
+        setGridColumns(grid, featureMap[0].length);
+        grid.innerHTML = "";
+        featureMap.forEach((row, r) => {
+          row.forEach((value, c) => {
+            const index = r * row.length + c;
+            const cell = document.createElement("div");
+            const complete = index <= state.step;
+            cell.className = `feature-cell${complete ? "" : " pending"}${index === state.step ? " current" : ""}`;
+            if (complete) {
+              cell.style.background = featureColor(value, min, max);
+              cell.textContent = formatNumber(value);
+            } else {
+              cell.textContent = ".";
+            }
+            grid.appendChild(cell);
+          });
+        });
+      }
+
+      function renderCalculation(weights, featureMap) {
+        const row = Math.floor(state.step / 4);
+        const col = state.step % 4;
+        const products = [];
+        let sum = 0;
+        for (let r = 0; r < 3; r += 1) {
+          for (let c = 0; c < 3; c += 1) {
+            const input = field[row + r][col + c];
+            const weight = weights[r][c];
+            const product = input * weight;
+            sum += product;
+            products.push(`${input} x ${formatNumber(weight)} = ${formatNumber(product)}`);
+          }
+        }
+        $("calcLine").textContent = `feature[${row + 1}, ${col + 1}] = sum of 9 products = ${formatNumber(sum)}${Math.abs(sum - featureMap[row][col]) > 0.01 ? "" : ""}`;
+        const list = $("productList");
+        list.innerHTML = "";
+        products.forEach((text) => {
+          const chip = document.createElement("span");
+          chip.className = "product-chip";
+          chip.textContent = text;
+          list.appendChild(chip);
+        });
+      }
+
+      function renderOperation() {
+        const weights = getWeights();
+        const featureMap = computeFeatureMap(weights);
+        $("positionRange").value = state.step;
+        $("positionLabel").textContent = `${state.step + 1} / 16`;
+        renderInputGrid();
+        renderKernelGrid();
+        renderFeatureGrid(featureMap);
+        renderCalculation(weights, featureMap);
+      }
+
+      function stopPlayback() {
+        if (state.timer) {
+          window.clearInterval(state.timer);
+          state.timer = null;
+        }
+        $("playStep").textContent = "Play 2D";
+      }
+
+      function stopCricketPlayback() {
+        if (state.cricketTimer) {
+          window.clearInterval(state.cricketTimer);
+          state.cricketTimer = null;
+        }
+        $("cricketPlay").textContent = "Play";
+      }
+
+      function moveStep(delta) {
+        state.step = (state.step + delta + 16) % 16;
+        renderOperation();
+      }
+
+      function moveCricketStep(delta) {
+        const maxWindow = cricketReadings[state.cricketStep].length - 3;
+        state.cricketWindow = (state.cricketWindow + delta + maxWindow + 1) % (maxWindow + 1);
+        renderCricket();
+      }
+
+      function setupCricketEvents() {
+        $("cricketPositionRange").addEventListener("input", (event) => {
+          state.cricketStep = Number(event.target.value);
+          state.cricketWindow = 0;
+          stopCricketPlayback();
+          renderCricket();
+        });
+        $("cricketWindowRange").addEventListener("input", (event) => {
+          state.cricketWindow = Number(event.target.value);
+          stopCricketPlayback();
+          renderCricket();
+        });
+        $("cricketPreset").addEventListener("change", (event) => {
+          const previousWeights = getCricketWeights();
+          state.cricketPreset = event.target.value;
+          if (state.cricketPreset === "custom") {
+            state.cricketCustomWeights = previousWeights.slice();
+          }
+          renderCricket();
+        });
+        $("cricketPrev").addEventListener("click", () => {
+          stopCricketPlayback();
+          moveCricketStep(-1);
+        });
+        $("cricketNext").addEventListener("click", () => {
+          stopCricketPlayback();
+          moveCricketStep(1);
+        });
+        $("cricketPlay").addEventListener("click", () => {
+          if (state.cricketTimer) {
+            stopCricketPlayback();
+            return;
+          }
+          $("cricketPlay").textContent = "Pause";
+          state.cricketTimer = window.setInterval(() => moveCricketStep(1), 900);
+        });
+      }
+
+      function setupOperationEvents() {
+        $("filterSelect").addEventListener("change", (event) => {
+          state.filter = event.target.value;
+          renderOperation();
+        });
+        $("positionRange").addEventListener("input", (event) => {
+          state.step = Number(event.target.value);
+          stopPlayback();
+          renderOperation();
+        });
+        $("prevStep").addEventListener("click", () => {
+          stopPlayback();
+          moveStep(-1);
+        });
+        $("nextStep").addEventListener("click", () => {
+          stopPlayback();
+          moveStep(1);
+        });
+        $("playStep").addEventListener("click", () => {
+          if (state.timer) {
+            stopPlayback();
+            return;
+          }
+          $("playStep").textContent = "Pause 2D";
+          state.timer = window.setInterval(() => moveStep(1), 850);
+        });
+      }
+
+      function spatialDim(size, filterSize, stride, padding) {
+        const padded = size + 2 * padding;
+        const raw = (padded - filterSize) / stride + 1;
+        const out = padded >= filterSize ? Math.floor((padded - filterSize) / stride) + 1 : 0;
+        return {
+          padded,
+          out,
+          raw,
+          exact: Number.isInteger(raw) && out > 0
+        };
+      }
+
+      function shapeValue(r, c) {
+        return ((r + 1) * 3 + (c + 2) * 5) % 10;
+      }
+
+      function clampControl(id, value, max, labelId) {
+        const control = $(id);
+        const safeMax = Math.max(0, max);
+        const safeValue = Math.min(value, safeMax);
+        control.max = String(safeMax);
+        control.value = String(safeValue);
+        $(labelId).textContent = `${safeValue + 1} / ${safeMax + 1}`;
+        return safeValue;
+      }
+
+      function renderPlacementGrid(gridId, size, filterSize, stride, padding, startIndex) {
+        const dims = spatialDim(size, filterSize, stride, padding);
+        const grid = $(gridId);
+        const padded = dims.padded;
+        setGridColumns(grid, padded);
+        grid.innerHTML = "";
+        const startRow = dims.out > 0 ? Math.floor(startIndex / dims.out) * stride : 0;
+        const startCol = dims.out > 0 ? (startIndex % dims.out) * stride : 0;
+        const validStarts = new Set();
+        for (let r = 0; r < dims.out; r += 1) {
+          for (let c = 0; c < dims.out; c += 1) {
+            validStarts.add(`${r * stride},${c * stride}`);
+          }
+        }
+        for (let r = 0; r < padded; r += 1) {
+          for (let c = 0; c < padded; c += 1) {
+            const real = r >= padding && r < padding + size && c >= padding && c < padding + size;
+            const covered = dims.out > 0 && r >= startRow && r < startRow + filterSize && c >= startCol && c < startCol + filterSize;
+            const isStart = dims.out > 0 && r === startRow && c === startCol;
+            const cell = document.createElement("div");
+            cell.className = `shape-cell ${real ? "real" : "pad"}${covered ? " covered" : ""}${isStart ? " start" : ""}${validStarts.has(`${r},${c}`) ? " valid-start" : ""}`;
+            cell.textContent = real ? shapeValue(r - padding, c - padding) : "0";
+            grid.appendChild(cell);
+          }
+        }
+        return dims;
+      }
+
+      function renderOutputGrid(gridId, outSize, currentIndex) {
+        const grid = $(gridId);
+        setGridColumns(grid, Math.max(1, outSize));
+        grid.innerHTML = "";
+        if (!outSize) {
+          const cell = document.createElement("div");
+          cell.className = "feature-cell pending";
+          cell.textContent = "No full placement";
+          cell.style.aspectRatio = "auto";
+          cell.style.minHeight = "54px";
+          grid.appendChild(cell);
+          return;
+        }
+        for (let r = 0; r < outSize; r += 1) {
+          for (let c = 0; c < outSize; c += 1) {
+            const index = r * outSize + c;
+            const cell = document.createElement("div");
+            cell.className = `feature-cell${index === currentIndex ? " current" : ""}`;
+            cell.textContent = `${r + 1},${c + 1}`;
+            grid.appendChild(cell);
+          }
+        }
+      }
+
+      function makePoolBase(size) {
+        const rows = [];
+        for (let r = 0; r < size; r += 1) {
+          const row = [];
+          for (let c = 0; c < size; c += 1) {
+            row.push(((r + 2) * 4 + (c + 1) * 3 + r * c) % 17);
+          }
+          rows.push(row);
+        }
+        return rows;
+      }
+
+      function poolDims(inputSize, poolSize, poolStride) {
+        const raw = (inputSize - poolSize) / poolStride + 1;
+        const out = inputSize >= poolSize ? Math.floor((inputSize - poolSize) / poolStride) + 1 : 0;
+        return {
+          out,
+          raw,
+          exact: Number.isInteger(raw) && out > 0
+        };
+      }
+
+      function poolWindowValues(base, startRow, startCol, size) {
+        const values = [];
+        for (let r = 0; r < size; r += 1) {
+          for (let c = 0; c < size; c += 1) {
+            values.push(base[startRow + r][startCol + c]);
+          }
+        }
+        return values;
+      }
+
+      function poolResult(values, type) {
+        if (!values.length) return 0;
+        if (type === "avg") {
+          return values.reduce((a, b) => a + b, 0) / values.length;
+        }
+        return Math.max(...values);
+      }
+
+      function renderStack(containerId, count, labelPrefix, className) {
+        const container = $(containerId);
+        container.innerHTML = "";
+        const shown = Math.min(count, 5);
+        for (let i = 0; i < shown; i += 1) {
+          const card = document.createElement("div");
+          card.className = className;
+          card.style.left = `${10 + i * 9}%`;
+          card.style.top = `${16 + i * 10}px`;
+          card.style.width = "64%";
+          card.style.height = "62%";
+          card.textContent = i === shown - 1 && count > shown ? `+${count - shown + 1}` : `${labelPrefix} ${i + 1}`;
+          container.appendChild(card);
+        }
+      }
+
+      function renderNormalPanel() {
+        const shape = state.shape;
+        const dims = spatialDim(shape.size, shape.filterSize, 1, 0);
+        const maxStart = Math.max(0, dims.out * dims.out - 1);
+        shape.normalStart = clampControl("normalStartControl", shape.normalStart, maxStart, "normalStartValue");
+        $("normalSizeValue").textContent = shape.size;
+        $("normalShapeMetric").textContent = `${dims.out} x ${dims.out}`;
+        $("normalInputLabel").textContent = `${shape.size} x ${shape.size}`;
+        $("normalOutputLabel").textContent = `${dims.out} x ${dims.out}`;
+        $("normalFormula").textContent = `W2 = H2 = ${shape.size} - ${shape.filterSize} + 1 = ${dims.out}`;
+        renderPlacementGrid("normalInputGrid", shape.size, shape.filterSize, 1, 0, shape.normalStart);
+        renderOutputGrid("normalOutputGrid", dims.out, shape.normalStart);
+      }
+
+      function renderStridePanel() {
+        const shape = state.shape;
+        const dims = spatialDim(shape.size, shape.filterSize, shape.stride, 0);
+        const maxStart = Math.max(0, dims.out * dims.out - 1);
+        shape.strideStart = clampControl("strideStartControl", shape.strideStart, maxStart, "strideStartValue");
+        $("strideShapeMetric").textContent = `${dims.out} x ${dims.out}`;
+        $("strideInputLabel").textContent = `S = ${shape.stride}`;
+        $("strideOutputLabel").textContent = `${dims.out} x ${dims.out}`;
+        $("strideFormula").textContent = `W2 = H2 = floor((${shape.size} - ${shape.filterSize}) / ${shape.stride}) + 1 = ${dims.out}`;
+        renderPlacementGrid("strideInputGrid", shape.size, shape.filterSize, shape.stride, 0, shape.strideStart);
+        renderOutputGrid("strideOutputGrid", dims.out, shape.strideStart);
+      }
+
+      function renderPaddingPanel() {
+        const shape = state.shape;
+        const dims = spatialDim(shape.size, shape.filterSize, shape.paddingStride, shape.padding);
+        const maxStart = Math.max(0, dims.out * dims.out - 1);
+        shape.paddingStart = clampControl("paddingStartControl", shape.paddingStart, maxStart, "paddingStartValue");
+        $("paddingValue").textContent = shape.padding;
+        $("paddingShapeMetric").textContent = `${dims.out} x ${dims.out}`;
+        $("paddingInputLabel").textContent = `${dims.padded} x ${dims.padded}`;
+        $("paddingOutputLabel").textContent = `${dims.out} x ${dims.out}`;
+        $("paddingFormula").textContent = `W2 = H2 = floor((${shape.size} + 2*${shape.padding} - ${shape.filterSize}) / ${shape.paddingStride}) + 1 = ${dims.out}`;
+        $("paddingSameNote").textContent = `Padding changes the working side from ${shape.size} to ${dims.padded}; then stride ${shape.paddingStride} visits ${dims.out} starts per side.`;
+        $("paddingWarning").hidden = dims.exact;
+        $("paddingWarning").textContent = "The division is not exact, so floor skips the partial final placement.";
+        renderPlacementGrid("paddingInputGrid", shape.size, shape.filterSize, shape.paddingStride, shape.padding, shape.paddingStart);
+        renderOutputGrid("paddingOutputGrid", dims.out, shape.paddingStart);
+        return dims;
+      }
+
+      function renderVolumePanel(convDims) {
+        const shape = state.shape;
+        const weightsPerFilter = shape.filterSize * shape.filterSize * shape.depth;
+        $("volumeDepthValue").textContent = shape.depth;
+        $("volumeFilterCountValue").textContent = shape.filterCount;
+        $("volumeShapeMetric").textContent = `${convDims.out} x ${convDims.out} x ${shape.filterCount}`;
+        $("volumeInputLabel").textContent = `${shape.size} x ${shape.size} x ${shape.depth}`;
+        $("volumeOutputLabel").textContent = `${shape.filterCount} feature maps`;
+        $("volumeFilterCard").textContent = `${shape.filterSize} x ${shape.filterSize} x ${shape.depth} filter`;
+        $("volumeFormula").textContent = `W2 = H2 = ${convDims.out}; D2 = K = ${shape.filterCount}`;
+        $("volumeParamNote").textContent = `One filter has ${weightsPerFilter} weights; ${shape.filterCount} filters have ${weightsPerFilter * shape.filterCount} weights before biases.`;
+        renderStack("volumeInputStack", shape.depth, "slice", "slice-card");
+        renderStack("volumeOutputStack", shape.filterCount, "map", "map-card");
+      }
+
+      function renderPoolPanel(convDims) {
+        const shape = state.shape;
+        const pool = poolDims(convDims.out, shape.poolSize, shape.poolStride);
+        const maxStart = Math.max(0, pool.out * pool.out - 1);
+        shape.poolStart = clampControl("poolStartProgress", shape.poolStart, maxStart, "poolStartValue");
+        $("poolShapeMetric").textContent = `${pool.out} x ${pool.out} x ${shape.filterCount}`;
+        $("poolInputLabel").textContent = `${convDims.out} x ${convDims.out}`;
+        $("poolOutputLabel").textContent = `${pool.out} x ${pool.out}`;
+        $("poolFormula").textContent = `P2 = floor((${convDims.out} - ${shape.poolSize}) / ${shape.poolStride}) + 1 = ${pool.out}`;
+        $("poolNote").textContent = `${shape.poolType === "max" ? "Max" : "Average"} pooling has 0 learned parameters and keeps depth ${shape.filterCount}.`;
+        const inputGrid = $("poolInputGrid");
+        const outputGrid = $("poolOutputGrid");
+        setGridColumns(inputGrid, Math.max(1, convDims.out));
+        setGridColumns(outputGrid, Math.max(1, pool.out));
+        inputGrid.innerHTML = "";
+        outputGrid.innerHTML = "";
+        if (!convDims.out) {
+          return;
+        }
+        const base = makePoolBase(convDims.out);
+        const startRow = pool.out > 0 ? Math.floor(shape.poolStart / pool.out) * shape.poolStride : 0;
+        const startCol = pool.out > 0 ? (shape.poolStart % pool.out) * shape.poolStride : 0;
+        base.forEach((row, r) => {
+          row.forEach((value, c) => {
+            const covered = pool.out > 0 && r >= startRow && r < startRow + shape.poolSize && c >= startCol && c < startCol + shape.poolSize;
+            const cell = document.createElement("div");
+            cell.className = `pool-cell${covered ? " pool-covered" : ""}`;
+            cell.textContent = value;
+            inputGrid.appendChild(cell);
+          });
+        });
+        if (!pool.out) {
+          const cell = document.createElement("div");
+          cell.className = "pool-cell";
+          cell.textContent = "No full pool";
+          cell.style.aspectRatio = "auto";
+          cell.style.minHeight = "54px";
+          outputGrid.appendChild(cell);
+          return;
+        }
+        for (let r = 0; r < pool.out; r += 1) {
+          for (let c = 0; c < pool.out; c += 1) {
+            const values = poolWindowValues(base, r * shape.poolStride, c * shape.poolStride, shape.poolSize);
+            const result = poolResult(values, shape.poolType);
+            const index = r * pool.out + c;
+            const cell = document.createElement("div");
+            cell.className = `pool-cell pool-output${index === shape.poolStart ? " pool-current" : ""}`;
+            cell.textContent = formatNumber(result);
+            outputGrid.appendChild(cell);
+          }
+        }
+      }
+
+      function renderShape() {
+        renderNormalPanel();
+        renderStridePanel();
+        const convDims = renderPaddingPanel();
+        renderVolumePanel(convDims);
+        renderPoolPanel(convDims);
+      }
+
+      function resetShapeState() {
+        Object.assign(state.shape, {
+          size: 6,
+          depth: 3,
+          filterCount: 4,
+          filterSize: 3,
+          normalStart: 0,
+          stride: 2,
+          strideStart: 0,
+          padding: 1,
+          paddingStride: 2,
+          paddingStart: 0,
+          poolType: "max",
+          poolSize: 2,
+          poolStride: 2,
+          poolStart: 0
+        });
+        $("normalSizeControl").value = "6";
+        $("normalFilterControl").value = "3";
+        $("normalStartControl").value = "0";
+        $("strideStepControl").value = "2";
+        $("strideStartControl").value = "0";
+        $("paddingAmountControl").value = "1";
+        $("paddingStrideControl").value = "2";
+        $("paddingStartControl").value = "0";
+        $("volumeDepthControl").value = "3";
+        $("volumeFilterCountControl").value = "4";
+        $("poolModeProgress").value = "max";
+        $("poolSizeProgress").value = "2";
+        $("poolStrideProgress").value = "2";
+        $("poolStartProgress").value = "0";
+      }
+
+      function setupShapeEvents() {
+        $("normalSizeControl").addEventListener("input", (event) => {
+          state.shape.size = Number(event.target.value);
+          state.shape.normalStart = 0;
+          state.shape.strideStart = 0;
+          state.shape.paddingStart = 0;
+          state.shape.poolStart = 0;
+          renderShape();
+        });
+        $("normalFilterControl").addEventListener("change", (event) => {
+          state.shape.filterSize = Number(event.target.value);
+          state.shape.normalStart = 0;
+          state.shape.strideStart = 0;
+          state.shape.paddingStart = 0;
+          state.shape.poolStart = 0;
+          renderShape();
+        });
+        $("normalStartControl").addEventListener("input", (event) => {
+          state.shape.normalStart = Number(event.target.value);
+          renderShape();
+        });
+        $("strideStepControl").addEventListener("change", (event) => {
+          state.shape.stride = Number(event.target.value);
+          state.shape.strideStart = 0;
+          renderShape();
+        });
+        $("strideStartControl").addEventListener("input", (event) => {
+          state.shape.strideStart = Number(event.target.value);
+          renderShape();
+        });
+        $("paddingAmountControl").addEventListener("input", (event) => {
+          state.shape.padding = Number(event.target.value);
+          state.shape.paddingStart = 0;
+          state.shape.poolStart = 0;
+          renderShape();
+        });
+        $("paddingStrideControl").addEventListener("change", (event) => {
+          state.shape.paddingStride = Number(event.target.value);
+          state.shape.paddingStart = 0;
+          state.shape.poolStart = 0;
+          renderShape();
+        });
+        $("paddingStartControl").addEventListener("input", (event) => {
+          state.shape.paddingStart = Number(event.target.value);
+          renderShape();
+        });
+        $("volumeDepthControl").addEventListener("input", (event) => {
+          state.shape.depth = Number(event.target.value);
+          renderShape();
+        });
+        $("volumeFilterCountControl").addEventListener("input", (event) => {
+          state.shape.filterCount = Number(event.target.value);
+          renderShape();
+        });
+        $("poolModeProgress").addEventListener("change", (event) => {
+          state.shape.poolType = event.target.value;
+          renderShape();
+        });
+        $("poolSizeProgress").addEventListener("change", (event) => {
+          state.shape.poolSize = Number(event.target.value);
+          state.shape.poolStart = 0;
+          renderShape();
+        });
+        $("poolStrideProgress").addEventListener("change", (event) => {
+          state.shape.poolStride = Number(event.target.value);
+          state.shape.poolStart = 0;
+          renderShape();
+        });
+        $("poolStartProgress").addEventListener("input", (event) => {
+          state.shape.poolStart = Number(event.target.value);
+          renderShape();
+        });
+        $("resetShape").addEventListener("click", () => {
+          resetShapeState();
+          renderShape();
+        });
+      }
+
+      function setupTabs() {
+        document.querySelectorAll(".tab-button").forEach((button) => {
+          button.addEventListener("click", () => {
+            const tab = button.dataset.tab;
+            state.tab = tab;
+            document.querySelectorAll(".tab-button").forEach((item) => {
+              item.setAttribute("aria-selected", item.dataset.tab === tab ? "true" : "false");
+            });
+            $("operation-panel").classList.toggle("active", tab === "operation");
+            $("shape-panel").classList.toggle("active", tab === "shape");
+            if (tab !== "operation") {
+              stopPlayback();
+              stopCricketPlayback();
+            }
+          });
+        });
+      }
+
+      setupTabs();
+      setupCricketEvents();
+      setupOperationEvents();
+      setupShapeEvents();
+      renderFilterShowcase();
+      renderCricket();
+      renderOperation();
+      renderShape();
+    })();
+  </script>
+</body>
+</html>
