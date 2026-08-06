@@ -45,7 +45,7 @@ a {
   margin: 18px auto;
   padding: clamp(18px, 2.5vw, 34px);
   display: grid;
-  grid-template-rows: auto auto 1fr auto auto;
+  grid-template-rows: auto auto 1fr auto;
   gap: clamp(14px, 1.8vw, 24px);
   background: rgba(255, 255, 255, 0.62);
   border: 1px solid rgba(255, 255, 255, 0.9);
@@ -72,8 +72,7 @@ a {
 .quote-strip,
 .stage,
 .formula,
-.progress-panel,
-.brandline {
+.progress-panel {
   position: relative;
   z-index: 1;
 }
@@ -99,6 +98,28 @@ h1 {
   font-size: clamp(2rem, 4vw, 4.6rem);
   line-height: 0.98;
   letter-spacing: 0;
+}
+
+.site-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.home-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 10px 15px;
+  color: var(--blue-deep);
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(36, 71, 231, 0.16);
+  border-radius: 999px;
+  text-decoration: none;
+  font-weight: 850;
+  white-space: nowrap;
 }
 
 .linkedin {
@@ -483,6 +504,8 @@ h1 {
 
 .controls button:hover,
 .controls button:focus-visible,
+.home-link:hover,
+.home-link:focus-visible,
 .linkedin:hover,
 .linkedin:focus-visible {
   transform: translateY(-1px);
@@ -494,16 +517,6 @@ h1 {
   color: white;
   background: var(--blue);
   border-color: var(--blue);
-}
-
-.brandline {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px 20px;
-  color: var(--muted);
-  font-size: 0.9rem;
-  font-weight: 780;
 }
 
 @keyframes travel {
@@ -581,6 +594,16 @@ body.reduced-motion *::after {
 
   .topbar {
     flex-direction: column;
+  }
+
+  .site-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .home-link {
+    flex: 1 1 130px;
+    justify-content: center;
   }
 
   .linkedin {
