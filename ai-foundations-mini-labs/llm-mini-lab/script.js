@@ -57,47 +57,96 @@ const tokenExamples = {
 
 const contextPresets = [
   {
+    id: "capital",
     label: "Capital",
     text: "The capital of India is",
-    note: "The next token is strongly guided toward a place name."
+    note: "The next token is strongly guided toward a place name.",
+    probabilitySets: {
+      0: [
+        ["Delhi", 92],
+        ["Mumbai", 3],
+        ["Jaipur", 2],
+        ["Kolkata", 1],
+        ["Other", 2]
+      ],
+      1: [
+        ["Delhi", 68],
+        ["Mumbai", 12],
+        ["Jaipur", 7],
+        ["Kolkata", 5],
+        ["Other", 8]
+      ],
+      2: [
+        ["Delhi", 46],
+        ["Mumbai", 22],
+        ["Jaipur", 13],
+        ["Kolkata", 9],
+        ["Other", 10]
+      ]
+    },
+    generationTokens: ["Delhi", "and", "it", "serves", "as", "India's", "national", "capital."]
   },
   {
+    id: "classroom",
     label: "Classroom",
     text: "AI can help students by",
-    note: "The next token is guided toward an educational action."
+    note: "The next token is guided toward an educational action.",
+    probabilitySets: {
+      0: [
+        ["explaining", 44],
+        ["practising", 24],
+        ["summarising", 16],
+        ["answering", 10],
+        ["other", 6]
+      ],
+      1: [
+        ["explaining", 31],
+        ["practising", 24],
+        ["creating", 19],
+        ["summarising", 15],
+        ["other", 11]
+      ],
+      2: [
+        ["explaining", 24],
+        ["creating", 23],
+        ["practising", 21],
+        ["questioning", 17],
+        ["other", 15]
+      ]
+    },
+    generationTokens: ["explaining", "concepts", "step", "by", "step", "with", "examples."]
   },
   {
+    id: "unclear",
     label: "Unclear",
     text: "It is",
-    note: "A vague context leaves many possible continuations."
+    note: "A vague context leaves many possible continuations.",
+    probabilitySets: {
+      0: [
+        ["important", 24],
+        ["possible", 22],
+        ["clear", 19],
+        ["not", 18],
+        ["other", 17]
+      ],
+      1: [
+        ["possible", 22],
+        ["important", 21],
+        ["unclear", 19],
+        ["not", 18],
+        ["other", 20]
+      ],
+      2: [
+        ["raining", 20],
+        ["possible", 19],
+        ["unclear", 19],
+        ["late", 18],
+        ["other", 24]
+      ]
+    },
+    generationTokens: ["important", "but", "the", "meaning", "depends", "on", "context."]
   }
 ];
-
-const probabilitySets = {
-  0: [
-    ["Delhi", 92],
-    ["Mumbai", 3],
-    ["Jaipur", 2],
-    ["Kolkata", 1],
-    ["Other", 2]
-  ],
-  1: [
-    ["Delhi", 68],
-    ["Mumbai", 12],
-    ["Jaipur", 7],
-    ["Kolkata", 5],
-    ["Other", 8]
-  ],
-  2: [
-    ["Delhi", 46],
-    ["Mumbai", 22],
-    ["Jaipur", 13],
-    ["Kolkata", 9],
-    ["Other", 10]
-  ]
-};
-
-const generationTokens = ["can", "help", "students", "learn", "with", "personalized", "practice."];
 const hallucinationTokens = [
   ["invented", 34],
   ["by", 31],
@@ -112,6 +161,7 @@ let autoTimer = null;
 let generationIndex = 0;
 let generationTimer = null;
 let selectedContext = contextPresets[0];
+let selectedNextToken = null;
 
 const elements = {
   header: document.querySelector(".app-header"),
@@ -145,6 +195,7 @@ const elements = {
   networkSignal: document.querySelector("#networkSignal"),
   networkPanel: document.querySelector(".network-panel"),
   processButton: document.querySelector("#processButton"),
+  predictionContext: document.querySelector("#predictionContext"),
   probabilityList: document.querySelector("#probabilityList"),
   temperatureSlider: document.querySelector("#temperatureSlider"),
   temperatureValue: document.querySelector("#temperatureValue"),
@@ -382,6 +433,8 @@ function renderContextPresets() {
       selectedContext = contextPresets[Number(button.dataset.context)];
       renderContextTray();
       renderNetworkTokens();
+      resetPrediction();
+      resetGeneration();
     });
   });
 }
@@ -429,17 +482,20 @@ function processNetwork() {
 function renderProbabilities() {
   const temperature = Number(elements.temperatureSlider.value);
   const labels = ["Low", "Medium", "Higher"];
-  const probabilities = probabilitySets[temperature];
+  const probabilities = selectedContext.probabilitySets[temperature];
+  elements.predictionContext.textContent = selectedContext.text;
   elements.temperatureValue.textContent = labels[temperature];
   elements.probabilityList.innerHTML = probabilities
     .map(([token, value]) => probabilityRow(token, value))
     .join("");
   elements.selectedToken.hidden = true;
+  selectedNextToken = null;
 }
 
 function sampleNextToken() {
   const temperature = Number(elements.temperatureSlider.value);
-  const selected = probabilitySets[temperature][0][0];
+  const selected = selectedContext.probabilitySets[temperature][0][0];
+  selectedNextToken = selected;
   elements.selectedToken.hidden = false;
   elements.selectedToken.querySelector("strong").textContent = selected;
 
@@ -454,7 +510,7 @@ function resetPrediction() {
 }
 
 function stepGeneration() {
-  if (generationIndex >= generationTokens.length) {
+  if (generationIndex >= selectedContext.generationTokens.length) {
     return;
   }
   generationIndex += 1;
@@ -462,12 +518,19 @@ function stepGeneration() {
 }
 
 function renderGeneration() {
-  const visibleTokens = ["AI", ...generationTokens.slice(0, generationIndex)];
+  const nextToken = selectedNextToken || selectedContext.probabilitySets[0][0][0];
+  const continuationTokens = selectedContext.generationTokens[0] === nextToken
+    ? selectedContext.generationTokens.slice(1)
+    : selectedContext.generationTokens;
+  const visibleTokens = [
+    ...tokenize(selectedContext.text),
+    ...(generationIndex > 0 ? [nextToken, ...continuationTokens.slice(0, generationIndex - 1)] : [])
+  ];
   elements.generatedText.textContent = visibleTokens.join(" ");
   elements.generationContext.innerHTML = visibleTokens
     .map(token => `<span class="token-pill">${escapeHtml(token)}</span>`)
     .join("");
-  elements.stepGenerateButton.disabled = generationIndex >= generationTokens.length;
+  elements.stepGenerateButton.disabled = generationIndex >= selectedContext.generationTokens.length;
 }
 
 function resetGeneration() {
@@ -484,7 +547,7 @@ function toggleGenerationAuto() {
 
   elements.autoGenerateButton.textContent = "Pause Generation";
   generationTimer = window.setInterval(() => {
-    if (generationIndex >= generationTokens.length) {
+    if (generationIndex >= selectedContext.generationTokens.length) {
       stopGenerationAuto();
       return;
     }
