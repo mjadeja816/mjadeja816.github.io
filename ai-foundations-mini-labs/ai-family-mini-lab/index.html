@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>The AI Family | Module 1 Mini Lab</title>
+    <meta
+      name="description"
+      content="A professional interactive mini lab for distinguishing AI, Machine Learning, Deep Learning, Generative AI, and LLMs through a smart campus scenario and historical timeline."
+    >
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to mini lab</a>
+
+    <header class="app-header" data-elevated="false">
+      <div class="header-inner">
+        <a class="brand" href="#main" aria-label="The AI Family Mini Lab">
+          <span class="brand-mark" aria-hidden="true">
+            <i></i><i></i><i></i><i></i>
+          </span>
+          <span>The AI Family</span>
+        </a>
+
+        <nav class="window-tabs" aria-label="Mini lab windows">
+          <button class="window-tab is-active" type="button" data-window="family" aria-selected="true">Explore AI</button>
+          <button class="window-tab" type="button" data-window="timeline" aria-selected="false">AI Through Time</button>
+        </nav>
+
+        <div class="header-actions">
+          <button class="icon-button" type="button" id="termsToggle" aria-expanded="false" aria-controls="termsPanel" title="Key terms">
+            <span aria-hidden="true">?</span>
+            <span class="sr-only">Open key terms</span>
+          </button>
+          <button class="icon-button" type="button" id="restartButton" title="Restart lab">
+            <span aria-hidden="true">R</span>
+            <span class="sr-only">Restart mini lab</span>
+          </button>
+        </div>
+      </div>
+      <div class="progress-track" aria-hidden="true">
+        <span id="progressBar"></span>
+      </div>
+    </header>
+
+    <aside class="terms-panel" id="termsPanel" aria-label="Key terms" hidden>
+      <div class="terms-header">
+        <h2>Key Terms</h2>
+        <button class="icon-button" type="button" id="termsClose" title="Close key terms">
+          <span aria-hidden="true">x</span>
+          <span class="sr-only">Close key terms</span>
+        </button>
+      </div>
+      <div class="terms-list" id="termsList"></div>
+    </aside>
+
+    <main class="mini-lab" id="main">
+      <section class="lab-window is-active" id="familyWindow" data-window-panel="family" aria-labelledby="familyTitle">
+        <div class="window-grid">
+          <section class="copy-column">
+            <p class="eyebrow">Mini Lab 1</p>
+            <h1 id="familyTitle">One smart campus. Five levels of AI capability.</h1>
+            <p class="lead">
+              Move from fixed rules to language conversation without treating AI, ML, Deep Learning, Generative AI, and LLMs as equal-sized ideas.
+            </p>
+            <div class="capability-path" id="capabilityPath" aria-label="Capability progression"></div>
+          </section>
+
+          <section class="campus-stage" aria-label="Smart campus scenario">
+            <img class="campus-art" src="assets/smart-campus.svg" alt="Illustration of a smart campus connected to AI systems">
+            <div class="scenario-console" aria-live="polite">
+              <span id="scenarioKicker">Rule Based AI</span>
+              <h2 id="scenarioTitle">Scholarship eligibility check</h2>
+              <p id="scenarioText">The system follows explicit rules: if attendance is above 75% and CGPA is above 8, the student is eligible.</p>
+              <div class="mini-output" id="scenarioOutput">IF attendance > 75 AND CGPA > 8 -> Eligible</div>
+            </div>
+          </section>
+        </div>
+
+        <div class="concept-controls" id="conceptControls" aria-label="AI concepts"></div>
+
+        <section class="understanding-grid" aria-label="Concept explanation and hierarchy">
+          <article class="definition-card" id="definitionCard">
+            <span id="definitionLabel">Artificial Intelligence</span>
+            <h2 id="definitionTitle">Machines performing tasks that normally require aspects of human intelligence.</h2>
+            <p id="definitionNote">Rule based systems are still AI when they perform intelligence-like tasks using explicit instructions.</p>
+          </article>
+
+          <article class="hierarchy-card">
+            <div class="hierarchy-map" id="hierarchyMap" aria-label="Concept hierarchy">
+              <div class="ring ring-ai" data-ring="ai">
+                <span>Artificial Intelligence</span>
+                <div class="ring ring-ml" data-ring="ml">
+                  <span>Machine Learning</span>
+                  <div class="ring ring-dl" data-ring="dl">
+                    <span>Deep Learning</span>
+                    <div class="genai-chip" data-ring="genai">Generative AI</div>
+                    <div class="llm-chip" data-ring="llm">LLMs</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <p id="hierarchyNote">AI is the broad field. Machine Learning sits inside AI; Deep Learning is a major approach within Machine Learning.</p>
+          </article>
+        </section>
+
+        <section class="quiz-section" aria-labelledby="quizTitle">
+          <div>
+            <p class="eyebrow">Active Check</p>
+            <h2 id="quizTitle">Which AI capability would you use?</h2>
+          </div>
+          <div class="quiz-grid" id="quizGrid"></div>
+        </section>
+      </section>
+
+      <section class="lab-window" id="timelineWindow" data-window-panel="timeline" aria-labelledby="timelineTitle">
+        <div class="timeline-layout">
+          <section class="timeline-main">
+            <p class="eyebrow">Window 2</p>
+            <h1 id="timelineTitle">How did AI move from rules to generative systems?</h1>
+            <div class="era-ribbon" id="eraRibbon" aria-label="Capability eras"></div>
+
+            <div class="slider-card">
+              <label class="timeline-slider-label" for="timelineSlider">
+                <span>Milestone</span>
+                <strong id="timelineYear">1950</strong>
+              </label>
+              <input id="timelineSlider" type="range" min="0" max="12" value="0" step="1">
+              <div class="timeline-track" id="timelineTrack" aria-label="Timeline milestones"></div>
+            </div>
+
+            <article class="milestone-card" aria-live="polite">
+              <span id="milestoneType">Question</span>
+              <h2 id="milestoneTitle">Alan Turing proposes the imitation game</h2>
+              <p id="milestoneMessage">Can machines exhibit intelligent behaviour?</p>
+              <div class="capability-badge" id="milestoneCapability">Capability focus: intelligence-like behaviour</div>
+            </article>
+          </section>
+
+          <aside class="timeline-side" aria-label="Timeline concept connection">
+            <h2>Concept illuminated</h2>
+            <div class="compact-family" id="compactFamily">
+              <button type="button" data-compact="ai">AI</button>
+              <button type="button" data-compact="ml">ML</button>
+              <button type="button" data-compact="dl">DL</button>
+              <button type="button" data-compact="genai">GenAI</button>
+              <button type="button" data-compact="llm">LLM</button>
+            </div>
+            <p id="timelineConnection">Early AI asked whether machines could show intelligent behaviour at all.</p>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

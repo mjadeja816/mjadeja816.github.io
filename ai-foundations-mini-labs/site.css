@@ -1,0 +1,364 @@
+:root {
+  --bg: #f6f3ec;
+  --ink: #132126;
+  --muted: #5f6d68;
+  --surface: #fffdf8;
+  --line: #d8cec0;
+  --teal: #2f7b75;
+  --teal-dark: #183f43;
+  --gold: #e5b84b;
+  --coral: #d8694f;
+  --violet: #5c6bc0;
+  --shadow: 0 22px 58px rgba(19, 33, 38, 0.13);
+  --radius: 8px;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  background:
+    linear-gradient(145deg, rgba(47, 123, 117, 0.11), transparent 34%),
+    linear-gradient(235deg, rgba(229, 184, 75, 0.14), transparent 37%),
+    linear-gradient(315deg, rgba(216, 105, 79, 0.08), transparent 35%),
+    var(--bg);
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+a {
+  color: inherit;
+}
+
+h1,
+h2,
+p {
+  margin-top: 0;
+  overflow-wrap: anywhere;
+}
+
+h1,
+h2 {
+  line-height: 1.04;
+  letter-spacing: 0;
+}
+
+h1 {
+  max-width: 960px;
+  margin-bottom: 20px;
+  font-size: clamp(2.8rem, 7vw, 6.4rem);
+}
+
+h2 {
+  margin-bottom: 14px;
+  font-size: clamp(1.9rem, 3.5vw, 3.8rem);
+}
+
+p {
+  color: var(--muted);
+}
+
+.skip-link:not(:focus) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link:focus {
+  position: fixed;
+  z-index: 30;
+  top: 12px;
+  left: 12px;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: #fff;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  min-height: 74px;
+  width: min(1220px, calc(100% - 32px));
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  border-bottom: 1px solid rgba(216, 206, 192, 0.84);
+  background: rgba(246, 243, 236, 0.9);
+  backdrop-filter: blur(18px);
+}
+
+.brand {
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  font-weight: 900;
+}
+
+.brand-mark {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--ink);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+nav a {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  padding: 7px 10px;
+  border-radius: var(--radius);
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+nav a:hover,
+nav a:focus-visible {
+  background: rgba(47, 123, 117, 0.1);
+  color: var(--teal-dark);
+  outline: none;
+}
+
+.hero,
+.labs,
+.site-footer {
+  width: min(1220px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.hero {
+  min-height: calc(100svh - 74px);
+  display: grid;
+  align-content: center;
+  gap: 34px;
+  padding: 64px 0 42px;
+}
+
+.hero-copy p:last-child {
+  max-width: 780px;
+  margin-bottom: 0;
+  color: #40514d;
+  font-size: clamp(1.08rem, 1.7vw, 1.32rem);
+}
+
+.eyebrow,
+.lab-number {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--teal-dark);
+  font-size: 0.78rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.sequence-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.sequence-strip span {
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255, 253, 248, 0.72);
+  color: var(--ink);
+  font-weight: 900;
+}
+
+.labs {
+  display: grid;
+  gap: 34px;
+  padding-bottom: 54px;
+}
+
+.lab-feature {
+  min-height: 560px;
+  display: grid;
+  grid-template-columns: minmax(280px, 0.38fr) minmax(420px, 0.62fr);
+  gap: 22px;
+  align-items: stretch;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: rgba(255, 253, 248, 0.72);
+  box-shadow: var(--shadow);
+}
+
+.lab-copy {
+  min-width: 0;
+  display: grid;
+  align-content: center;
+  padding: 24px;
+}
+
+.lab-copy p {
+  margin-bottom: 24px;
+  font-size: 1.05rem;
+}
+
+.launch-link {
+  width: fit-content;
+  min-height: 46px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: #fff;
+  font-weight: 900;
+  text-decoration: none;
+}
+
+.launch-link:hover,
+.launch-link:focus-visible {
+  background: var(--teal-dark);
+  outline: 3px solid rgba(47, 123, 117, 0.25);
+  outline-offset: 3px;
+}
+
+.preview-frame {
+  min-height: 520px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.preview-frame iframe {
+  width: 100%;
+  height: 100%;
+  min-height: 520px;
+  display: block;
+  border: 0;
+  background: var(--surface);
+}
+
+.lab-feature:nth-child(1) {
+  border-top: 6px solid var(--teal);
+}
+
+.lab-feature:nth-child(2) {
+  border-top: 6px solid var(--gold);
+}
+
+.lab-feature:nth-child(3) {
+  border-top: 6px solid var(--violet);
+}
+
+.site-footer {
+  min-height: 86px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-weight: 850;
+}
+
+@media (max-width: 960px) {
+  .site-header {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 14px 0;
+  }
+
+  nav {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .hero {
+    min-height: auto;
+    padding-top: 48px;
+  }
+
+  .sequence-strip,
+  .lab-feature {
+    grid-template-columns: 1fr;
+  }
+
+  .lab-copy {
+    padding: 14px 10px 6px;
+  }
+}
+
+@media (max-width: 620px) {
+  body {
+    font-size: 15px;
+  }
+
+  .site-header,
+  .hero,
+  .labs,
+  .site-footer {
+    width: min(100% - 24px, 1220px);
+  }
+
+  .sequence-strip {
+    gap: 8px;
+  }
+
+  .sequence-strip span {
+    min-height: 48px;
+    padding: 10px;
+  }
+
+  .lab-feature {
+    min-height: 0;
+    padding: 12px;
+  }
+
+  .preview-frame,
+  .preview-frame iframe {
+    min-height: 460px;
+  }
+
+  .site-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    justify-content: center;
+  }
+}

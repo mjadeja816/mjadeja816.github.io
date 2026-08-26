@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>How Neural Networks Learn</title>
+    <meta
+      name="description"
+      content="An interactive visual explanation of how neural networks learn from prediction, error, feedback, and parameter adjustment."
+    >
+    <link rel="icon" href="assets/houses/house-compact.jpg" type="image/jpeg">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#story">Skip to visualization</a>
+
+    <header class="app-header" data-elevated="false">
+      <div class="header-inner">
+        <a class="brand" href="#story" aria-label="How Neural Networks Learn">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>How Neural Networks Learn</span>
+        </a>
+
+        <div class="header-actions">
+          <button class="icon-button" type="button" id="termsToggle" aria-expanded="false" aria-controls="termsPanel">
+            <span aria-hidden="true">?</span>
+            <span class="sr-only">Open key terms</span>
+          </button>
+          <button class="icon-button" type="button" id="restartTop">
+            <span aria-hidden="true">&#8634;</span>
+            <span class="sr-only">Restart</span>
+          </button>
+        </div>
+      </div>
+      <div class="progress-track" aria-hidden="true">
+        <span id="progressBar"></span>
+      </div>
+    </header>
+
+    <aside class="terms-panel" id="termsPanel" aria-label="Key terms" hidden>
+      <div class="terms-header">
+        <h2>Key Terms</h2>
+        <button class="icon-button" type="button" id="termsClose">
+          <span aria-hidden="true">x</span>
+          <span class="sr-only">Close key terms</span>
+        </button>
+      </div>
+      <div class="terms-list" id="termsList"></div>
+    </aside>
+
+    <main class="story" id="story">
+      <section class="screen is-active" data-step="0" aria-labelledby="challengeTitle">
+        <div class="hero-screen">
+          <div class="hero-copy">
+            <p class="eyebrow">Foundation Idea</p>
+            <h1 id="challengeTitle">Can an AI learn to predict the price of a house?</h1>
+            <p class="lead">
+              Start with one example, one input, and one prediction. Then watch how mistakes become feedback.
+            </p>
+            <div class="definition-strip">
+              <strong>Learning</strong>
+              <span>The process through which a model improves its predictions using examples from data.</span>
+            </div>
+            <button class="primary-action" type="button" data-next>Show How AI Learns</button>
+          </div>
+          <article class="house-card feature-house">
+            <img src="assets/houses/house-hero.jpg" alt="Modern house used as the example for price prediction">
+            <div class="house-card-body">
+              <span class="tag">House A</span>
+              <dl>
+                <div>
+                  <dt>Size</dt>
+                  <dd>1000 sq. ft.</dd>
+                </div>
+                <div>
+                  <dt>Actual market price</dt>
+                  <dd class="hidden-price">Hidden</dd>
+                </div>
+              </dl>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="screen" data-step="1" aria-labelledby="neuronTitle">
+        <div class="screen-grid">
+          <div class="copy-column">
+            <p class="eyebrow">One Neuron</p>
+            <h2 id="neuronTitle">Meet an artificial neuron</h2>
+            <p>
+              A neuron is a small adjustable formula. It receives an input, combines it with learned parameters, and produces an output.
+            </p>
+            <article class="definition-card">
+              <h3>Artificial Neuron</h3>
+              <p>A basic computational unit that receives inputs, combines them using learned weights and a bias, and produces an output.</p>
+            </article>
+            <div class="equation" aria-label="z equals w times x plus b">
+              <button type="button" data-symbol="x">x</button>
+              <span>&times;</span>
+              <button type="button" data-symbol="w">w</button>
+              <span>+</span>
+              <button type="button" data-symbol="b">b</button>
+              <span>=</span>
+              <strong>output</strong>
+            </div>
+            <p class="symbol-help" id="symbolHelp">Select x, w, or b to see what it means.</p>
+          </div>
+
+          <div class="interactive-panel">
+            <div class="neuron-flow" aria-label="Single neuron flow">
+              <div class="flow-node input-node">
+                <span>Input</span>
+                <strong>1000 sq. ft.</strong>
+              </div>
+              <div class="flow-link"></div>
+              <div class="flow-node parameter-node">
+                <span>Weight</span>
+                <strong id="weightBadge">4.5</strong>
+              </div>
+              <div class="flow-link"></div>
+              <div class="neuron" aria-label="Artificial neuron">
+                <span></span>
+                <strong>Neuron</strong>
+              </div>
+              <div class="flow-link"></div>
+              <div class="flow-node output-node">
+                <span>Predicted Price</span>
+                <strong id="predictionBadge">Rs. 55.0 lakh</strong>
+              </div>
+            </div>
+
+            <div class="slider-grid">
+              <label>
+                <span>Weight <strong id="weightValue">4.5</strong></span>
+                <input id="weightSlider" type="range" min="2" max="7" value="4.5" step="0.1">
+              </label>
+              <label>
+                <span>Bias <strong id="biasValue">10.0</strong></span>
+                <input id="biasSlider" type="range" min="0" max="30" value="10" step="0.5">
+              </label>
+            </div>
+            <p class="takeaway">Different weights and biases produce different predictions.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-step="2" aria-labelledby="predictionTitle">
+        <div class="center-stack">
+          <p class="eyebrow">Prediction And Error</p>
+          <h2 id="predictionTitle">The network makes a prediction</h2>
+          <div class="comparison-layout">
+            <article class="metric-block actual">
+              <span>Actual Price</span>
+              <strong>Rs. 60 lakh</strong>
+            </article>
+            <article class="metric-block predicted">
+              <span>Prediction</span>
+              <strong>Rs. 55 lakh</strong>
+            </article>
+            <article class="metric-block error">
+              <span>Error</span>
+              <strong>Rs. 5 lakh</strong>
+            </article>
+          </div>
+          <div class="error-scale" aria-label="Large error to small error">
+            <span>Large error -> Large loss</span>
+            <div><i></i></div>
+            <span>Small error -> Small loss</span>
+          </div>
+          <div class="definition-row">
+            <article class="definition-card">
+              <h3>Prediction Error</h3>
+              <p>The difference between what the model predicted and what actually happened.</p>
+            </article>
+            <article class="definition-card">
+              <h3>Loss</h3>
+              <p>A numerical measure of how wrong the model's prediction is.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-step="3" aria-labelledby="wrongTitle">
+        <div class="question-screen">
+          <p class="eyebrow">Rhetorical Pause</p>
+          <h2 id="wrongTitle">The model is wrong. How does it learn?</h2>
+          <div class="choice-grid">
+            <article class="choice-card rejected">
+              <span aria-hidden="true">x</span>
+              <strong>Store only the correct answer</strong>
+            </article>
+            <article class="choice-card rejected">
+              <span aria-hidden="true">x</span>
+              <strong>Randomly guess again</strong>
+            </article>
+            <article class="choice-card accepted">
+              <span aria-hidden="true">&#10003;</span>
+              <strong>Adjust what it has learned</strong>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-step="4" aria-labelledby="loopTitle">
+        <div class="screen-grid loop-grid">
+          <div class="copy-column">
+            <p class="eyebrow">Feedback Loop</p>
+            <h2 id="loopTitle">How a neural network learns</h2>
+            <p>
+              Training repeats the same cycle many times: predict, compare, send error information backward, adjust, and try again.
+            </p>
+            <div class="definition-stack">
+              <article class="definition-card">
+                <h3>Training</h3>
+                <p>The repeated process through which a model learns useful parameter values from data.</p>
+              </article>
+              <article class="definition-card">
+                <h3>Backpropagation</h3>
+                <p>A method for sending information about the prediction error backward through the network to determine what needs adjustment.</p>
+              </article>
+              <article class="definition-card">
+                <h3>Optimizer</h3>
+                <p>The mechanism that updates the model's weights and biases to reduce its error.</p>
+              </article>
+            </div>
+          </div>
+          <div class="learning-loop" aria-label="Learning loop">
+            <div class="loop-ring"></div>
+            <div class="loop-step" style="--i:0"><strong>Training Example</strong></div>
+            <div class="loop-step" style="--i:1"><strong>Make Prediction</strong></div>
+            <div class="loop-step" style="--i:2"><strong>Compare With Actual</strong></div>
+            <div class="loop-step" style="--i:3"><strong>Calculate Error</strong></div>
+            <div class="loop-step" style="--i:4"><strong>Send Error Backward</strong></div>
+            <div class="loop-step" style="--i:5"><strong>Adjust Parameters</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-step="5" aria-labelledby="trainTitle">
+        <div class="screen-grid">
+          <div class="copy-column">
+            <p class="eyebrow">Watch Training</p>
+            <h2 id="trainTitle">Watch the model learn</h2>
+            <p>
+              Press train to see repeated corrections. The prediction moves closer to the actual price and the error declines.
+            </p>
+            <button class="primary-action" type="button" id="trainButton">Train Model</button>
+            <article class="takeaway-card">
+              <p>Learning does not mean storing one answer. It means adjusting parameters so that predictions improve across examples.</p>
+            </article>
+          </div>
+          <div class="training-panel">
+            <div class="round-display">
+              <span id="roundLabel">Round 1</span>
+              <strong id="roundPrediction">Prediction: Rs. 55.0 lakh</strong>
+              <em id="roundError">Error: Rs. 5.0 lakh</em>
+            </div>
+            <svg class="error-chart" viewBox="0 0 520 260" role="img" aria-label="Error decreasing over training rounds">
+              <line x1="58" y1="214" x2="486" y2="214"></line>
+              <line x1="58" y1="34" x2="58" y2="214"></line>
+              <text x="272" y="248">Training rounds</text>
+              <text x="18" y="132" transform="rotate(-90 18 132)">Error</text>
+              <polyline id="errorLine" points=""></polyline>
+              <g id="errorDots"></g>
+            </svg>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-step="6" aria-labelledby="dataTitle">
+        <div class="center-stack">
+          <p class="eyebrow">Training Data</p>
+          <h2 id="dataTitle">One example is not enough</h2>
+          <p class="narrow">
+            The model needs many examples to detect useful patterns instead of reacting to one house.
+          </p>
+          <div class="house-data-grid">
+            <article class="data-house">
+              <img src="assets/houses/house-compact.jpg" alt="Compact house training example">
+              <strong>800 sq. ft.</strong>
+              <span>Rs. 45 lakh</span>
+            </article>
+            <article class="data-house active">
+              <img src="assets/houses/house-hero.jpg" alt="Medium house training example">
+              <strong>1000 sq. ft.</strong>
+              <span>Rs. 60 lakh</span>
+            </article>
+            <article class="data-house">
+              <img src="assets/houses/house-large.jpg" alt="Large house training example">
+              <strong>1500 sq. ft.</strong>
+              <span>Rs. 80 lakh</span>
+            </article>
+            <article class="data-house">
+              <img src="assets/houses/house-large.jpg" alt="Larger house training example">
+              <strong>1800 sq. ft.</strong>
+              <span>Rs. 94 lakh</span>
+            </article>
+          </div>
+          <article class="definition-card wide-definition">
+            <h3>Training Data</h3>
+            <p>Examples used by a model to learn patterns and adjust its parameters.</p>
+          </article>
+          <div class="process-line">Many examples -> Detect patterns -> Adjust parameters -> Improve predictions</div>
+        </div>
+      </section>
+
+      <section class="screen" data-step="7" aria-labelledby="networkTitle">
+        <div class="screen-grid">
+          <div class="copy-column">
+            <p class="eyebrow">Zoom Out</p>
+            <h2 id="networkTitle">From one neuron to a neural network</h2>
+            <p>
+              More inputs and more neurons let the model learn richer relationships, while the learning loop remains the same.
+            </p>
+            <div class="definition-stack compact">
+              <article class="definition-card">
+                <h3>Neural Network</h3>
+                <p>A collection of interconnected artificial neurons that learns relationships between inputs and outputs.</p>
+              </article>
+              <article class="definition-card">
+                <h3>Hidden Layer</h3>
+                <p>A layer of neurons that learns intermediate patterns from the input data.</p>
+              </article>
+              <article class="definition-card">
+                <h3>Deep Learning</h3>
+                <p>Learning with neural networks containing multiple layers that can discover increasingly complex patterns.</p>
+              </article>
+            </div>
+          </div>
+          <div class="network-diagram" aria-label="Inputs connected to neural network layers and predicted price output">
+            <div class="input-stack">
+              <span>Size</span>
+              <span>Location</span>
+              <span>Bedrooms</span>
+              <span>Age</span>
+            </div>
+            <div class="connector-field" aria-hidden="true"></div>
+            <div class="layer">
+              <i></i><i></i><i></i>
+            </div>
+            <div class="layer hidden-layer">
+              <i></i><i></i><i></i><i></i>
+            </div>
+            <div class="network-output">Predicted Price</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-step="8" aria-labelledby="trainInferTitle">
+        <div class="center-stack">
+          <p class="eyebrow">Two Modes</p>
+          <h2 id="trainInferTitle">Training is different from prediction</h2>
+          <div class="split-panels">
+            <article class="mode-panel">
+              <h3>Training</h3>
+              <ol>
+                <li>Training examples</li>
+                <li>Prediction</li>
+                <li>Error</li>
+                <li>Adjust parameters</li>
+                <li>Repeat</li>
+              </ol>
+              <strong>The model is learning.</strong>
+            </article>
+            <article class="mode-panel inference">
+              <h3>Inference</h3>
+              <ol>
+                <li>New unseen house</li>
+                <li>Trained neural network</li>
+                <li>Predicted price</li>
+              </ol>
+              <p>Using a trained model to make a prediction for new input.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-step="9" aria-labelledby="generalTitle">
+        <div class="center-stack">
+          <p class="eyebrow">Generalization</p>
+          <h2 id="generalTitle">Has it learned or memorized?</h2>
+          <p class="narrow">Our model performs extremely well on the houses it studied. Is it necessarily a good model?</p>
+          <div class="answer-actions">
+            <button class="ghost-action" type="button" data-overfit="yes">Yes</button>
+            <button class="primary-action" type="button" data-overfit="not">Not necessarily</button>
+          </div>
+          <div class="overfit-result" id="overfitResult" hidden>
+            <div class="generalization-grid">
+              <article>
+                <h3>Training Data</h3>
+                <p>Data used for learning.</p>
+                <div class="checks">OK OK OK OK OK</div>
+              </article>
+              <article>
+                <h3>Test Data</h3>
+                <p>New unseen data used to check whether learning generalizes.</p>
+                <div class="checks mixed">OK X X OK X</div>
+              </article>
+            </div>
+            <article class="definition-card wide-definition">
+              <h3>Overfitting</h3>
+              <p>When a model performs very well on its training examples but poorly on new unseen examples.</p>
+            </article>
+            <p class="takeaway">Good AI should learn patterns that generalize, not merely memorize examples.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="screen" data-step="10" aria-labelledby="finalTitle">
+        <div class="final-screen">
+          <p class="eyebrow">Complete Story</p>
+          <h2 id="finalTitle">The neural network learning story</h2>
+          <div class="final-flow">
+            <span>Data</span>
+            <span>Predict</span>
+            <span>Compare</span>
+            <span>Measure Error</span>
+            <span>Learn</span>
+            <span>Adjust</span>
+            <span>Repeat</span>
+          </div>
+          <article class="final-takeaway">
+            <strong>Training = Predict -> Compare -> Learn -> Adjust -> Repeat</strong>
+          </article>
+          <div class="after-training">
+            <span>After Training</span>
+            <strong>New Input -> Trained Neural Network -> Prediction</strong>
+          </div>
+          <p class="closing-line">
+            A neural network learns by making predictions, measuring its errors, and adjusting its parameters so that future predictions become better.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <nav class="story-controls" aria-label="Story controls">
+      <button class="control-button" type="button" id="prevButton">
+        <span aria-hidden="true">&#8592;</span>
+        <span>Previous</span>
+      </button>
+      <button class="control-button" type="button" id="autoButton" aria-pressed="false">
+        <span aria-hidden="true">&#9654;</span>
+        <span>Auto Play</span>
+      </button>
+      <button class="control-button" type="button" id="nextButton">
+        <span>Next</span>
+        <span aria-hidden="true">&#8594;</span>
+      </button>
+    </nav>
+
+    <script src="script.js"></script>
+  </body>
+</html>

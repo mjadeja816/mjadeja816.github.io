@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" role="img" aria-labelledby="title desc">
+  <title id="title">Smart campus learning scene</title>
+  <desc id="desc">A campus building connected to data, neural network, creative, and language panels.</desc>
+  <defs>
+    <linearGradient id="sky" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#e9f4f1"/>
+      <stop offset="1" stop-color="#fff8e8"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#d9ebe8"/>
+    </linearGradient>
+  </defs>
+  <rect width="960" height="620" rx="34" fill="url(#sky)"/>
+  <path d="M55 496c129-60 212-27 307-6 154 35 234-54 349-67 74-8 129 15 194 61v88H55z" fill="#dfe9d4"/>
+  <path d="M116 477h263v70H116z" fill="#dfb95d"/>
+  <path d="M146 279h202v198H146z" fill="#f8f5ed" stroke="#18343a" stroke-width="7"/>
+  <path d="M126 279h242l-121-83z" fill="#2f7b75" stroke="#18343a" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M187 330h42v42h-42zm75 0h42v42h-42zm-75 73h42v42h-42zm75 0h42v42h-42z" fill="url(#glass)" stroke="#18343a" stroke-width="5"/>
+  <path d="M545 184h263c22 0 40 18 40 40v220c0 22-18 40-40 40H545c-22 0-40-18-40-40V224c0-22 18-40 40-40z" fill="#fffdf8" stroke="#18343a" stroke-width="7"/>
+  <path d="M505 254h343" stroke="#d6c9b6" stroke-width="5"/>
+  <circle cx="555" cy="220" r="10" fill="#d8694f"/>
+  <circle cx="585" cy="220" r="10" fill="#e5b84b"/>
+  <circle cx="615" cy="220" r="10" fill="#2f7b75"/>
+  <path d="M556 294h92m-92 37h164m-164 37h121" stroke="#2f7b75" stroke-width="13" stroke-linecap="round"/>
+  <path d="M556 418h205" stroke="#d8694f" stroke-width="13" stroke-linecap="round"/>
+  <g fill="none" stroke="#18343a" stroke-width="5">
+    <path d="M410 308c38-11 65-1 95 17"/>
+    <path d="M410 392c35 20 66 25 95 11"/>
+    <path d="M348 236c75-70 138-87 207-71"/>
+  </g>
+  <g fill="#fffdf8" stroke="#18343a" stroke-width="5">
+    <circle cx="431" cy="308" r="18"/>
+    <circle cx="431" cy="392" r="18"/>
+    <circle cx="552" cy="164" r="18"/>
+  </g>
+  <g fill="#5c6bc0">
+    <circle cx="430" cy="308" r="7"/>
+    <circle cx="430" cy="392" r="7"/>
+    <circle cx="552" cy="164" r="7"/>
+  </g>
+  <path d="M640 82h150c18 0 32 14 32 32v35H608v-35c0-18 14-32 32-32z" fill="#18343a"/>
+  <path d="M642 113h113" stroke="#fff8e8" stroke-width="10" stroke-linecap="round"/>
+  <path d="M698 537c0-42 34-76 76-76s76 34 76 76" fill="none" stroke="#18343a" stroke-width="7"/>
+  <circle cx="774" cy="435" r="36" fill="#e5b84b" stroke="#18343a" stroke-width="7"/>
+  <path d="M745 537h58" stroke="#18343a" stroke-width="7" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>LLM Mini Lab | Module 1</title>
+    <meta
+      name="description"
+      content="A guided interactive mini lab for learning how large language models turn text into tokens, context, probabilities, generated responses, and hallucinations."
+    >
+    <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#lab">Skip to lab</a>
+
+    <header class="app-header" data-elevated="false">
+      <div class="header-inner">
+        <a class="brand" href="#lab" aria-label="LLM Mini Lab">
+          <span class="brand-mark" aria-hidden="true">
+            <i></i><i></i><i></i>
+          </span>
+          <span>LLM Mini Lab</span>
+        </a>
+
+        <div class="header-actions">
+          <button class="icon-button" type="button" id="termsToggle" aria-expanded="false" aria-controls="termsPanel" title="Key terms">
+            <span aria-hidden="true">?</span>
+            <span class="sr-only">Open key terms</span>
+          </button>
+          <button class="icon-button" type="button" id="restartTop" title="Restart lab">
+            <span aria-hidden="true">R</span>
+            <span class="sr-only">Restart lab</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="station-rail" id="stationRail" aria-label="Mini lab stations"></div>
+      <div class="progress-track" aria-hidden="true">
+        <span id="progressBar"></span>
+      </div>
+    </header>
+
+    <aside class="terms-panel" id="termsPanel" aria-label="Key terms" hidden>
+      <div class="terms-header">
+        <h2>Key Terms</h2>
+        <button class="icon-button" type="button" id="termsClose" title="Close key terms">
+          <span aria-hidden="true">x</span>
+          <span class="sr-only">Close key terms</span>
+        </button>
+      </div>
+      <div class="terms-list" id="termsList"></div>
+    </aside>
+
+    <main class="lab" id="lab">
+      <section class="station is-active" data-station="0" aria-labelledby="trainTitle">
+        <div class="station-layout training-layout">
+          <div class="copy-column">
+            <p class="eyebrow">Station 1</p>
+            <h1 id="trainTitle">How does an LLM learn?</h1>
+            <p class="lead">
+              Use one student character to separate training from generation: broad reading, teacher guided examples, and practice with feedback.
+            </p>
+            <article class="definition-strip">
+              <strong>Three broad stages in training modern LLMs</strong>
+              <span>Actual pipelines differ, but this mental model is a strong beginner map.</span>
+            </article>
+            <p class="core-message">
+              Pretraining builds broad language patterns. Fine tuning teaches answer style. Feedback helps improve behaviour.
+            </p>
+          </div>
+
+          <div class="lab-panel training-panel">
+            <img class="training-collage" src="assets/llm-learning-collage.png" alt="Student, teacher, token, and feedback learning collage">
+
+            <div class="training-phase-list" id="trainingPhaseList" aria-label="Training stages"></div>
+
+            <article class="training-detail" id="trainingDetail" aria-live="polite">
+              <span id="trainingKicker">Read enormous amounts of material</span>
+              <h2 id="trainingTitle">Pretraining</h2>
+              <p id="trainingAnalogy">
+                The student reads a huge library and gradually discovers patterns in language.
+              </p>
+              <strong id="trainingEquivalent">Large amounts of text -> Predict missing or next tokens -> Learn language patterns</strong>
+            </article>
+
+            <div class="training-compare" aria-label="Student learning compared with LLM training">
+              <div>
+                <span>Student learning</span>
+                <strong>Read -> Learn how to answer -> Improve through feedback</strong>
+              </div>
+              <div>
+                <span>LLM training</span>
+                <strong>Pretraining -> Supervised Fine Tuning -> Reinforcement Learning</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="station" data-station="1" aria-labelledby="tokensTitle">
+        <div class="station-layout">
+          <div class="copy-column">
+            <p class="eyebrow">Station 2</p>
+            <h1 id="tokensTitle">Words become tokens</h1>
+            <p class="lead">
+              Begin with ordinary text. A language model does not receive the sentence as a single human-like thought; it receives a sequence of token pieces.
+            </p>
+            <article class="definition-strip">
+              <strong>Token</strong>
+              <span>A small unit of text that a language model processes.</span>
+            </article>
+            <p class="core-message">
+              LLMs do not directly see sentences the way humans do. They process sequences of tokens.
+            </p>
+          </div>
+
+          <div class="lab-panel">
+            <label class="text-input">
+              <span>Sentence</span>
+              <input id="tokenInput" type="text" value="Artificial intelligence is changing education.">
+            </label>
+            <div class="token-machine" aria-label="Text tokenization machine">
+              <div class="raw-text" id="rawText">Artificial intelligence is changing education.</div>
+              <div class="machine-gate" aria-hidden="true">
+                <span></span>
+                <strong>Tokenizer</strong>
+              </div>
+              <div class="token-output" id="tokenOutput" aria-live="polite"></div>
+            </div>
+            <div class="button-row">
+              <button class="primary-action" type="button" id="tokenizeButton">Tokenize</button>
+              <button class="ghost-action" type="button" id="restoreSentenceButton">Restore Example</button>
+            </div>
+            <p class="micro-note" id="tokenNote">Press Tokenize to break the sentence into model-sized pieces.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="station" data-station="2" aria-labelledby="contextTitle">
+        <div class="station-layout">
+          <div class="copy-column">
+            <p class="eyebrow">Station 3</p>
+            <h2 id="contextTitle">Tokens enter the context</h2>
+            <p>
+              The context is the text currently available to the model while it predicts the next token. It is working information, not human memory.
+            </p>
+            <article class="definition-card">
+              <h3>Context</h3>
+              <p>The text currently available to the model when generating its next token.</p>
+            </article>
+            <p class="core-message">What is in the context strongly shapes what the model predicts next.</p>
+          </div>
+
+          <div class="lab-panel">
+            <div class="preset-row" id="contextPresets" aria-label="Choose a context example"></div>
+            <div class="context-window">
+              <div class="window-topline">
+                <span>Context Window</span>
+                <strong id="contextCount">0 tokens</strong>
+              </div>
+              <div class="context-tray" id="contextTray" aria-live="polite"></div>
+            </div>
+            <label class="range-control">
+              <span>Visible context capacity <strong id="capacityValue">8</strong></span>
+              <input id="capacitySlider" type="range" min="4" max="12" value="8" step="1">
+            </label>
+            <article class="insight-box">
+              <strong>Prompting connection</strong>
+              <span>Adding clearer context changes the prediction space the model sees.</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="station" data-station="3" aria-labelledby="networkTitle">
+        <div class="station-layout">
+          <div class="copy-column">
+            <p class="eyebrow">Station 4</p>
+            <h2 id="networkTitle">A large neural network processes the context</h2>
+            <p>
+              The neural network idea from the previous lab now operates at enormous scale. Tokens flow through learned parameters and become probabilities.
+            </p>
+            <article class="definition-card">
+              <h3>Parameters</h3>
+              <p>Values learned during training that encode patterns discovered from data.</p>
+            </article>
+            <p class="micro-note">
+              The earlier learning station explains how pretraining, supervised fine tuning, and feedback shape these learned parameters.
+            </p>
+          </div>
+
+          <div class="lab-panel network-panel">
+            <div class="network-flow" aria-label="Tokens flowing through a neural network">
+              <div class="input-stack" id="networkTokens"></div>
+              <div class="connection-field" aria-hidden="true"></div>
+              <div class="layer-stack" aria-hidden="true">
+                <div class="layer"><i></i><i></i><i></i><i></i></div>
+                <div class="layer"><i></i><i></i><i></i><i></i><i></i></div>
+                <div class="layer"><i></i><i></i><i></i></div>
+              </div>
+              <div class="output-stack">
+                <span>Learned probabilities</span>
+                <strong id="networkSignal">Waiting</strong>
+              </div>
+            </div>
+            <button class="primary-action" type="button" id="processButton">Process Context</button>
+            <div class="parameter-grid" aria-label="Parameter concepts">
+              <article>
+                <span>Training Data</span>
+                <strong>Examples from text</strong>
+              </article>
+              <article>
+                <span>Parameters</span>
+                <strong>Learned patterns</strong>
+              </article>
+              <article>
+                <span>Inference</span>
+                <strong>Use the learned model</strong>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="station" data-station="4" aria-labelledby="predictionTitle">
+        <div class="station-layout">
+          <div class="copy-column">
+            <p class="eyebrow">Station 5</p>
+            <h2 id="predictionTitle">Predict the next token</h2>
+            <p>
+              This is the central LLM move: given the current context, the model estimates which token is most likely to come next.
+            </p>
+            <article class="definition-strip">
+              <strong>Core Insight</strong>
+              <span>An LLM generates text by predicting which token should come next given the current context.</span>
+            </article>
+          </div>
+
+          <div class="lab-panel prediction-panel">
+            <div class="prompt-card">
+              <span>Current context</span>
+              <strong>The capital of India is</strong>
+            </div>
+            <div class="probability-list" id="probabilityList" aria-live="polite"></div>
+            <label class="range-control">
+              <span>Creativity / randomness <strong id="temperatureValue">Low</strong></span>
+              <input id="temperatureSlider" type="range" min="0" max="2" value="0" step="1">
+            </label>
+            <div class="button-row">
+              <button class="primary-action" type="button" id="sampleButton">Select Next Token</button>
+              <button class="ghost-action" type="button" id="resetPredictionButton">Reset</button>
+            </div>
+            <div class="selected-token" id="selectedToken" hidden>
+              <span>Selected token</span>
+              <strong>Delhi</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="station" data-station="5" aria-labelledby="generationTitle">
+        <div class="station-layout">
+          <div class="copy-column">
+            <p class="eyebrow">Station 6</p>
+            <h2 id="generationTitle">One token becomes many</h2>
+            <p>
+              A response appears because the selected token is added back into the context. Then the model predicts again. The loop repeats.
+            </p>
+            <div class="loop-formula" aria-label="LLM generation loop">
+              <span>Context</span>
+              <span>Predict token</span>
+              <span>Add token</span>
+              <span>Repeat</span>
+            </div>
+            <p class="core-message">
+              Neural network learning: Predict -> Compare -> Adjust -> Repeat. LLM generation: Context -> Predict token -> Add token -> Repeat.
+            </p>
+          </div>
+
+          <div class="lab-panel generation-panel">
+            <div class="generation-context">
+              <span>Updated context</span>
+              <div id="generationContext" class="context-tray compact"></div>
+            </div>
+            <div class="generation-output">
+              <span>Generated response</span>
+              <p id="generatedText">AI</p>
+            </div>
+            <div class="mini-loop">
+              <div class="loop-orbit" aria-hidden="true"></div>
+              <button type="button" id="stepGenerateButton">Predict Next</button>
+            </div>
+            <div class="button-row">
+              <button class="primary-action" type="button" id="autoGenerateButton">Auto Generate</button>
+              <button class="ghost-action" type="button" id="resetGenerationButton">Reset</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="station" data-station="6" aria-labelledby="hallucinationTitle">
+        <div class="station-layout">
+          <div class="copy-column">
+            <p class="eyebrow">Station 7</p>
+            <h2 id="hallucinationTitle">The surprise: fluent text can still be wrong</h2>
+            <p>
+              If the model is predicting likely text, does that guarantee the answer is true?
+            </p>
+            <article class="definition-card">
+              <h3>Hallucination</h3>
+              <p>A plausible sounding but incorrect or unsupported response generated by an AI model.</p>
+            </article>
+            <p class="core-message">Generating plausible language is not the same as verifying truth.</p>
+          </div>
+
+          <div class="lab-panel hallucination-panel">
+            <div class="question-card">
+              <span>User asks</span>
+              <strong>Who invented the solar-powered pencil in 1882?</strong>
+            </div>
+            <div class="truth-question" id="truthQuestion">
+              <button class="ghost-action" type="button" data-truth="yes">Yes, likely text means true</button>
+              <button class="primary-action" type="button" data-truth="no">No, it still needs checking</button>
+            </div>
+            <div class="hallucination-demo" id="hallucinationDemo" hidden>
+              <div class="probability-list small" id="hallucinationProbabilities"></div>
+              <article class="generated-claim">
+                <span>Fluent generated answer</span>
+                <p>"The solar-powered pencil was invented by Eleanor Marsh in 1882 after early experiments with miniature photovoltaic cells."</p>
+                <strong>Factually unsupported</strong>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="station" data-station="7" aria-labelledby="completeTitle">
+        <div class="final-screen">
+          <p class="eyebrow">Station 8</p>
+          <h2 id="completeTitle">The whole LLM mental model</h2>
+          <div class="complete-machine" aria-label="Complete LLM flow">
+            <div class="machine-row training-row">
+              <span>Pretraining</span>
+              <span>Fine tuning</span>
+              <span>Feedback</span>
+              <span>Learned parameters</span>
+            </div>
+            <div class="machine-row use-row">
+              <span>User context</span>
+              <span>Neural network</span>
+              <span>Next token probabilities</span>
+              <span>Selected token</span>
+              <span>Updated context</span>
+              <span>Generated response</span>
+            </div>
+          </div>
+          <div class="bonus-grid">
+            <article class="definition-card">
+              <h3>Knowledge in parameters</h3>
+              <p>Patterns learned during training. These may be useful, outdated, incomplete, or wrong.</p>
+            </article>
+            <article class="definition-card">
+              <h3>Knowledge in context</h3>
+              <p>Information currently provided to the model, such as your prompt, examples, or uploaded material.</p>
+            </article>
+            <article class="definition-card">
+              <h3>Response</h3>
+              <p>Learned patterns plus current context, expressed through repeated next-token prediction.</p>
+            </article>
+          </div>
+          <article class="final-takeaway">
+            <strong>Training: Pretraining -> Fine tuning -> Feedback. Generation: Text -> Tokens -> Context -> Next token probabilities -> Response -> Hallucination risk.</strong>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <nav class="lab-controls" aria-label="Mini lab controls">
+      <button class="control-button" type="button" id="prevButton">
+        <span aria-hidden="true">&lt;</span>
+        <span>Previous</span>
+      </button>
+      <button class="control-button" type="button" id="autoButton" aria-pressed="false">
+        <span aria-hidden="true">Play</span>
+        <span>Auto Walkthrough</span>
+      </button>
+      <button class="control-button" type="button" id="nextButton">
+        <span>Next</span>
+        <span aria-hidden="true">&gt;</span>
+      </button>
+    </nav>
+
+    <script src="script.js"></script>
+  </body>
+</html>

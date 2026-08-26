@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="AI Foundations">
+  <rect width="64" height="64" rx="14" fill="#132126"/>
+  <path d="M14 43V21h7l11 13 11-13h7v22h-7V31L34 43h-4l-9-12v12z" fill="#fffdf8"/>
+  <circle cx="51" cy="15" r="6" fill="#e5b84b"/>
+</svg>
