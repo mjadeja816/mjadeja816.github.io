@@ -1,0 +1,1109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prompt Geometry Visualizer | Mahipal Jadeja</title>
+  <meta name="description" content="An interactive prompt engineering visualization showing how prompts move through an embedding-like semantic universe.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='10' fill='%2301030a'/%3E%3Ccircle cx='20' cy='38' r='7' fill='%23ff4fd8'/%3E%3Ccircle cx='44' cy='24' r='7' fill='%2338bdf8'/%3E%3Cpath d='M25 35 L39 27' stroke='%23f8fbff' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+  <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js"></script>
+  <style>
+    :root {
+      --page: #01030a;
+      --panel: #070b18;
+      --panel-soft: #0b1122;
+      --ink: #edf5ff;
+      --muted: #aab8d3;
+      --line: rgba(148, 163, 184, 0.20);
+      --line-strong: rgba(125, 211, 252, 0.30);
+      --accent: #ff4fd8;
+      --blue: #38bdf8;
+      --green: #34d399;
+      --amber: #f59e0b;
+      --purple: #8b5cf6;
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 12% 18%, rgba(124, 58, 237, 0.20) 0%, rgba(124, 58, 237, 0.00) 24%),
+        radial-gradient(circle at 88% 14%, rgba(6, 182, 212, 0.16) 0%, rgba(6, 182, 212, 0.00) 20%),
+        radial-gradient(circle at 52% 82%, rgba(236, 72, 153, 0.12) 0%, rgba(236, 72, 153, 0.00) 24%),
+        linear-gradient(180deg, #01030a 0%, #020611 42%, #010208 100%);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.45;
+    }
+
+    button,
+    select,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    a {
+      color: #9bdcff;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+    }
+
+    .topbar {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 18px 0 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .topbar span {
+      color: var(--ink);
+    }
+
+    .hero {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 10px 0 14px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 4vw, 3.1rem);
+      line-height: 1.05;
+      font-weight: 850;
+    }
+
+    .subtitle {
+      margin-top: 10px;
+      max-width: 760px;
+      color: var(--muted);
+    }
+
+    .lab {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto 24px;
+      display: grid;
+      grid-template-columns: minmax(250px, 300px) minmax(0, 1fr);
+      gap: 0;
+      border: 1px solid var(--line);
+      background: rgba(2, 4, 13, 0.72);
+      min-height: 720px;
+    }
+
+    .controls {
+      background: linear-gradient(180deg, rgba(2, 5, 14, 0.995) 0%, rgba(3, 6, 16, 0.995) 100%);
+      border-right: 1px solid rgba(56, 189, 248, 0.12);
+      padding: 24px 22px;
+    }
+
+    .stage {
+      min-width: 0;
+      padding: 18px;
+      background: linear-gradient(135deg, rgba(2, 4, 13, 0.92), rgba(3, 9, 23, 0.94));
+    }
+
+    .section-title {
+      font-size: 1.08rem;
+      margin: 0 0 16px;
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .field label,
+    .checkbox-row label {
+      display: block;
+      color: var(--ink);
+      font-size: 0.88rem;
+      font-weight: 750;
+      margin-bottom: 7px;
+    }
+
+    select {
+      width: 100%;
+      background: #ffffff;
+      color: #111827;
+      border: 1px solid rgba(56, 189, 248, 0.20);
+      border-radius: 8px;
+      padding: 10px 12px;
+      outline: none;
+    }
+
+    .button-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin: 16px 0;
+    }
+
+    .button-grid.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .control-button {
+      min-height: 42px;
+      border: 1px solid rgba(99, 102, 241, 0.24);
+      border-radius: 8px;
+      background: rgba(10, 14, 28, 0.98);
+      color: var(--ink);
+      font-weight: 750;
+    }
+
+    .control-button:hover {
+      border-color: rgba(34, 211, 238, 0.42);
+      background: rgba(12, 18, 34, 0.99);
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: #ff4f61;
+    }
+
+    .range-value {
+      display: flex;
+      justify-content: space-between;
+      color: var(--ink);
+      font-size: 0.83rem;
+      font-weight: 750;
+      margin-top: 2px;
+    }
+
+    .divider {
+      border: 0;
+      border-top: 1px solid rgba(148, 163, 184, 0.10);
+      margin: 20px 0;
+    }
+
+    .code-box {
+      min-height: 46px;
+      border: 1px solid rgba(99, 102, 241, 0.18);
+      border-radius: 8px;
+      background: rgba(9, 14, 28, 0.92);
+      padding: 12px;
+      color: var(--ink);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.86rem;
+      word-break: break-word;
+    }
+
+    .word-box {
+      color: var(--ink);
+      font-weight: 800;
+    }
+
+    .checkbox-row {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .checkbox-row label {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      margin-bottom: 0;
+      cursor: pointer;
+    }
+
+    .checkbox-row input {
+      width: 16px;
+      height: 16px;
+      accent-color: #ff4f61;
+    }
+
+    .stage-head {
+      display: grid;
+      grid-template-columns: minmax(240px, 0.95fr) minmax(0, 2fr);
+      gap: 14px;
+      align-items: start;
+    }
+
+    .sequence-panel {
+      min-width: 0;
+    }
+
+    .sequence-panel h2 {
+      font-size: 1.48rem;
+      line-height: 1.12;
+      margin-bottom: 14px;
+    }
+
+    .progress-track {
+      height: 8px;
+      border-radius: 999px;
+      background: #e8eef7;
+      overflow: hidden;
+      margin: 12px 0 16px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0;
+      border-radius: inherit;
+      background: #1d9bf0;
+    }
+
+    .table-shell {
+      max-height: 190px;
+      overflow: auto;
+      border: 1px solid rgba(99, 102, 241, 0.20);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      color: #1f2937;
+      font-size: 0.84rem;
+    }
+
+    th,
+    td {
+      padding: 9px 10px;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th {
+      background: #f8fafc;
+      color: #6b7280;
+      font-weight: 700;
+    }
+
+    td:first-child {
+      text-align: right;
+      color: #374151;
+      font-variant-numeric: tabular-nums;
+    }
+
+    tr.is-current td {
+      background: #eef2ff;
+      color: #111827;
+      font-weight: 750;
+    }
+
+    .plot-wrap {
+      min-width: 0;
+      background: #02040d;
+      border: 1px solid rgba(148, 163, 184, 0.10);
+      min-height: 620px;
+    }
+
+    #plot {
+      width: 100%;
+      height: 660px;
+    }
+
+    .note {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto 28px;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 980px) {
+      .lab,
+      .stage-head {
+        grid-template-columns: 1fr;
+      }
+
+      .controls {
+        border-right: 0;
+        border-bottom: 1px solid rgba(56, 189, 248, 0.12);
+      }
+
+      .button-grid {
+        grid-template-columns: repeat(3, minmax(76px, 1fr));
+      }
+
+      #plot {
+        height: 560px;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .lab {
+        width: 100%;
+        border-left: 0;
+        border-right: 0;
+      }
+
+      .hero,
+      .note {
+        width: calc(100% - 24px);
+      }
+
+      .stage,
+      .controls {
+        padding: 16px 12px;
+      }
+
+      .button-grid {
+        grid-template-columns: 1fr;
+      }
+
+      th,
+      td {
+        padding: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="topbar">
+      <a href="teaching-demonstrations.html">Back to teaching demonstrations</a>
+      <span>mahipaljadeja.com</span>
+    </div>
+
+    <header class="hero">
+      <h1>Prompt Geometry Visualizer</h1>
+      <p class="subtitle">Interactive representation of prompt evolution in an embedding-like semantic space.</p>
+    </header>
+
+    <main class="lab" aria-label="Prompt Geometry Visualizer">
+      <aside class="controls">
+        <h2 class="section-title">Controls</h2>
+
+        <div class="field">
+          <label for="sequenceSelect">Choose sequence</label>
+          <select id="sequenceSelect"></select>
+        </div>
+
+        <div class="button-grid">
+          <button class="control-button" id="prevButton" type="button">Previous</button>
+          <button class="control-button" id="nextButton" type="button">Next</button>
+          <button class="control-button" id="resetButton" type="button">Reset</button>
+        </div>
+
+        <div class="button-grid two">
+          <button class="control-button" id="playButton" type="button">Auto play</button>
+          <button class="control-button" id="stopButton" type="button">Stop</button>
+        </div>
+
+        <div class="field">
+          <label for="stepRange">Current step</label>
+          <input id="stepRange" type="range" min="0" max="0" value="0">
+          <div class="range-value">
+            <span id="stepValue">0</span>
+            <span id="stepMax">0</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="speedRange">Animation speed</label>
+          <input id="speedRange" type="range" min="100" max="600" step="20" value="180">
+          <div class="range-value">
+            <span id="speedValue">0.18 sec</span>
+            <span>0.60 sec</span>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="field">
+          <label>Current text</label>
+          <div class="code-box" id="currentText"></div>
+        </div>
+
+        <div class="field">
+          <label>New word</label>
+          <div class="word-box" id="newWord"></div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="field checkbox-row">
+          <label><input id="anchorLabels" type="checkbox" checked> Show anchor labels</label>
+          <label><input id="genderArrows" type="checkbox" checked> Show gender direction</label>
+          <label><input id="semanticRings" type="checkbox" checked> Show semantic rings</label>
+        </div>
+      </aside>
+
+      <section class="stage">
+        <div class="stage-head">
+          <div class="sequence-panel">
+            <h2>Sequence evolution</h2>
+            <p id="stepSummary">Step 1 of 1</p>
+            <div class="progress-track" aria-hidden="true">
+              <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="table-shell">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Step</th>
+                    <th>Added word</th>
+                    <th>Cumulative prompt</th>
+                  </tr>
+                </thead>
+                <tbody id="sequenceTable"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="plot-wrap">
+            <div id="plot" aria-label="3D prompt trajectory plot"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <p class="note">
+      Static website edition of the Streamlit classroom prototype. The geometry is a compact browser projection for teaching the idea; the original Streamlit app uses sentence-transformer embeddings and PCA.
+    </p>
+  </div>
+
+  <script>
+    const demoSequences = {
+      "Weak prompt": "Tell me about AI",
+      "Focused technical prompt": "Explain how graph neural networks help detect fraud in financial transactions",
+      "Education prompt": "Create a personalized explanation of recursion for a beginner student",
+      "Healthcare prompt": "Describe how machine learning supports early disease diagnosis",
+      "Creative prompt": "Write a suspenseful story set in an abandoned library at midnight",
+      "Gender direction prompt": "The queen leads with intelligence wisdom and responsibility"
+    };
+
+    const anchorGroups = {
+      "Gender and royalty": [
+        "man", "woman", "king", "queen", "prince", "princess", "father", "mother", "brother", "sister"
+      ],
+      "Technology": [
+        "artificial intelligence", "machine learning", "neural network", "graph neural networks", "deep learning", "data science"
+      ],
+      "Education": [
+        "teaching", "learning", "classroom", "students", "personalized instruction", "assessment"
+      ],
+      "Healthcare": [
+        "hospital", "diagnosis", "patient", "medical imaging", "clinical prediction", "treatment planning"
+      ],
+      "Creativity": [
+        "poetry", "storytelling", "cinematic writing", "imagination", "creative expression", "narrative design"
+      ]
+    };
+
+    const familyColors = {
+      "Gender and royalty": "#38bdf8",
+      "Technology": "#8b5cf6",
+      "Education": "#2dd4bf",
+      "Healthcare": "#f59e0b",
+      "Creativity": "#ff4fd8"
+    };
+
+    const familyCenters = {
+      "Gender and royalty": [-0.08, -0.22, -0.35],
+      "Technology": [0.68, 0.34, 0.22],
+      "Education": [-0.08, 0.18, 0.12],
+      "Healthcare": [0.34, -0.58, -0.52],
+      "Creativity": [-0.58, 0.02, -0.08]
+    };
+
+    const fixedAnchors = {
+      "man": [-0.22, -0.34, -0.48],
+      "woman": [0.06, -0.18, -0.36],
+      "king": [-0.08, -0.44, -0.25],
+      "queen": [0.20, -0.28, -0.13],
+      "prince": [-0.20, -0.18, -0.24],
+      "princess": [0.15, -0.10, -0.20],
+      "father": [-0.28, -0.28, -0.35],
+      "mother": [0.05, -0.07, -0.28],
+      "brother": [-0.16, -0.10, -0.43],
+      "sister": [0.14, -0.02, -0.38]
+    };
+
+    const semanticFamilies = {
+      Technology: ["ai", "artificial", "intelligence", "machine", "learning", "neural", "network", "networks", "graph", "data", "fraud", "transactions"],
+      Education: ["explain", "create", "personalized", "recursion", "beginner", "student", "students", "teaching", "classroom", "education"],
+      Healthcare: ["healthcare", "health", "disease", "diagnosis", "patient", "medical", "clinical", "hospital", "treatment"],
+      Creativity: ["write", "story", "suspenseful", "abandoned", "library", "midnight", "creative", "poetry", "narrative"],
+      "Gender and royalty": ["queen", "king", "woman", "man", "gender", "royal", "leads", "wisdom", "responsibility"]
+    };
+
+    const elements = {
+      sequenceSelect: document.getElementById("sequenceSelect"),
+      prevButton: document.getElementById("prevButton"),
+      nextButton: document.getElementById("nextButton"),
+      resetButton: document.getElementById("resetButton"),
+      playButton: document.getElementById("playButton"),
+      stopButton: document.getElementById("stopButton"),
+      stepRange: document.getElementById("stepRange"),
+      stepValue: document.getElementById("stepValue"),
+      stepMax: document.getElementById("stepMax"),
+      speedRange: document.getElementById("speedRange"),
+      speedValue: document.getElementById("speedValue"),
+      currentText: document.getElementById("currentText"),
+      newWord: document.getElementById("newWord"),
+      anchorLabels: document.getElementById("anchorLabels"),
+      genderArrows: document.getElementById("genderArrows"),
+      semanticRings: document.getElementById("semanticRings"),
+      stepSummary: document.getElementById("stepSummary"),
+      progressFill: document.getElementById("progressFill"),
+      sequenceTable: document.getElementById("sequenceTable")
+    };
+
+    let state = {
+      step: 0,
+      timer: null
+    };
+
+    function hashString(value) {
+      let hash = 2166136261;
+      for (let index = 0; index < value.length; index += 1) {
+        hash ^= value.charCodeAt(index);
+        hash = Math.imul(hash, 16777619);
+      }
+      return hash >>> 0;
+    }
+
+    function randomFromSeed(seed) {
+      let value = seed >>> 0;
+      return function next() {
+        value += 0x6D2B79F5;
+        let t = value;
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+
+    function jitter(label, amount) {
+      const rand = randomFromSeed(hashString(label));
+      return [
+        (rand() - 0.5) * amount,
+        (rand() - 0.5) * amount,
+        (rand() - 0.5) * amount
+      ];
+    }
+
+    function add(a, b) {
+      return [a[0] + b[0], a[1] + b[1], a[2] + b[2]];
+    }
+
+    function sub(a, b) {
+      return [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
+    }
+
+    function scale(a, value) {
+      return [a[0] * value, a[1] * value, a[2] * value];
+    }
+
+    function lerp(a, b, t) {
+      return [
+        a[0] + (b[0] - a[0]) * t,
+        a[1] + (b[1] - a[1]) * t,
+        a[2] + (b[2] - a[2]) * t
+      ];
+    }
+
+    function tokenize(text) {
+      return text.trim().split(/\s+/).filter(Boolean);
+    }
+
+    function cumulativePrefixes(tokens) {
+      return tokens.map((_, index) => tokens.slice(0, index + 1).join(" "));
+    }
+
+    function makeAnchors() {
+      const rows = [];
+      Object.entries(anchorGroups).forEach(([family, terms]) => {
+        terms.forEach((term) => {
+          const base = fixedAnchors[term] || familyCenters[family];
+          rows.push({
+            family,
+            label: term,
+            point: fixedAnchors[term] || add(base, jitter(`${family}:${term}`, 0.28))
+          });
+        });
+      });
+      return rows;
+    }
+
+    const anchors = makeAnchors();
+    const anchorLookup = Object.fromEntries(anchors.map((item) => [item.label, item.point]));
+
+    function familyWeight(prefix) {
+      const words = prefix.toLowerCase().split(/\W+/).filter(Boolean);
+      const weights = {
+        "Gender and royalty": 0.35,
+        Technology: 0.35,
+        Education: 0.35,
+        Healthcare: 0.35,
+        Creativity: 0.35
+      };
+
+      Object.entries(semanticFamilies).forEach(([family, keys]) => {
+        keys.forEach((key) => {
+          if (words.includes(key)) {
+            weights[family] += 1;
+          }
+        });
+      });
+      return weights;
+    }
+
+    function weightedCenter(weights) {
+      let total = 0;
+      let point = [0, 0, 0];
+      Object.entries(weights).forEach(([family, weight]) => {
+        total += weight;
+        point = add(point, scale(familyCenters[family], weight));
+      });
+      return scale(point, 1 / Math.max(total, 0.001));
+    }
+
+    function promptCoords(prefixes) {
+      const start = [-0.78, -0.10, -0.28];
+      return prefixes.map((prefix, index) => {
+        const progress = (index + 1) / prefixes.length;
+        const target = weightedCenter(familyWeight(prefix));
+        const curve = [
+          Math.sin(progress * Math.PI * 1.15) * 0.12,
+          Math.cos(progress * Math.PI * 1.6) * 0.08,
+          Math.sin(progress * Math.PI * 2.0) * 0.08
+        ];
+        return add(add(lerp(start, target, progress), curve), jitter(prefix, 0.07));
+      });
+    }
+
+    function orbitRing(center, radius, axis, color, width, opacity) {
+      const samples = 120;
+      const x = [];
+      const y = [];
+      const z = [];
+      for (let index = 0; index <= samples; index += 1) {
+        const theta = (Math.PI * 2 * index) / samples;
+        if (axis === "xy") {
+          x.push(center[0] + radius * Math.cos(theta));
+          y.push(center[1] + radius * Math.sin(theta));
+          z.push(center[2]);
+        } else if (axis === "xz") {
+          x.push(center[0] + radius * Math.cos(theta));
+          y.push(center[1]);
+          z.push(center[2] + radius * Math.sin(theta));
+        } else {
+          x.push(center[0]);
+          y.push(center[1] + radius * Math.cos(theta));
+          z.push(center[2] + radius * Math.sin(theta));
+        }
+      }
+      return {
+        type: "scatter3d",
+        mode: "lines",
+        x,
+        y,
+        z,
+        line: { color, width },
+        opacity,
+        hoverinfo: "skip",
+        showlegend: false
+      };
+    }
+
+    function markerTrace(points, color, size, opacity, name, labels, showText) {
+      return {
+        type: "scatter3d",
+        mode: showText ? "markers+text" : "markers",
+        x: points.map((p) => p[0]),
+        y: points.map((p) => p[1]),
+        z: points.map((p) => p[2]),
+        text: showText ? labels : undefined,
+        textposition: "top center",
+        textfont: { size: 13, color: "#f8fbff" },
+        marker: {
+          size,
+          color,
+          opacity,
+          line: { color: "#ffffff", width: 1.2 }
+        },
+        hovertext: labels,
+        hoverinfo: "text+name",
+        name
+      };
+    }
+
+    function lineTrace(points, color, width, name, dash) {
+      return {
+        type: "scatter3d",
+        mode: "lines",
+        x: points.map((p) => p ? p[0] : null),
+        y: points.map((p) => p ? p[1] : null),
+        z: points.map((p) => p ? p[2] : null),
+        line: { color, width, dash },
+        hoverinfo: "skip",
+        name
+      };
+    }
+
+    function glowTrace(points, color, size, opacity, name) {
+      return {
+        type: "scatter3d",
+        mode: "markers",
+        x: points.map((p) => p[0]),
+        y: points.map((p) => p[1]),
+        z: points.map((p) => p[2]),
+        marker: { size, color, opacity, line: { color, width: 0 } },
+        hoverinfo: "skip",
+        name,
+        showlegend: false
+      };
+    }
+
+    function coneTrace(start, end, color, name, size, opacity) {
+      const vector = sub(end, start);
+      return {
+        type: "cone",
+        x: [start[0]],
+        y: [start[1]],
+        z: [start[2]],
+        u: [vector[0]],
+        v: [vector[1]],
+        w: [vector[2]],
+        anchor: "tail",
+        sizemode: "absolute",
+        sizeref: size,
+        colorscale: [[0, color], [1, color]],
+        showscale: false,
+        opacity,
+        name,
+        hoverinfo: "skip"
+      };
+    }
+
+    function starfield() {
+      const rand = randomFromSeed(42);
+      const points = Array.from({ length: 150 }, () => [
+        -1.1 + rand() * 2.2,
+        -1.1 + rand() * 2.2,
+        -1.1 + rand() * 2.2
+      ]);
+      return {
+        type: "scatter3d",
+        mode: "markers",
+        x: points.map((p) => p[0]),
+        y: points.map((p) => p[1]),
+        z: points.map((p) => p[2]),
+        marker: {
+          size: points.map((_, index) => 1.0 + (index % 7) * 0.35),
+          color: "#dbeafe",
+          opacity: 0.22
+        },
+        hoverinfo: "skip",
+        showlegend: false,
+        name: "Background field"
+      };
+    }
+
+    function buildLine(points, step) {
+      const line = [];
+      for (let index = 0; index < Math.min(step, points.length - 1); index += 1) {
+        line.push(points[index], points[index + 1], null);
+      }
+      return line.length ? line : [points[0]];
+    }
+
+    function buildTrail(points, step) {
+      const trail = [];
+      for (let index = 0; index <= Math.min(step, points.length - 1); index += 1) {
+        trail.push(points[index]);
+      }
+      return trail;
+    }
+
+    function buildPlot() {
+      const text = demoSequences[elements.sequenceSelect.value];
+      const tokens = tokenize(text);
+      const prefixes = cumulativePrefixes(tokens);
+      const points = promptCoords(prefixes);
+      const step = Math.min(state.step, prefixes.length - 1);
+      const traces = [starfield()];
+
+      Object.entries(anchorGroups).forEach(([family]) => {
+        const color = familyColors[family];
+        const familyPoints = anchors.filter((item) => item.family === family).map((item) => item.point);
+        const labels = anchors.filter((item) => item.family === family).map((item) => item.label);
+        const center = familyCenters[family];
+        traces.push(glowTrace(familyPoints, color, 24, 0.10, `${family} glow`));
+        traces.push(markerTrace(familyPoints, color, 7, 0.96, family, labels, elements.anchorLabels.checked));
+        traces.push(glowTrace([center], color, 40, 0.08, `${family} center`));
+        if (elements.semanticRings.checked) {
+          traces.push(orbitRing(center, 0.10, "xy", color, 4, 0.18));
+          traces.push(orbitRing(center, 0.14, "xz", color, 3, 0.12));
+        }
+      });
+
+      const path = buildLine(points, step);
+      const trail = buildTrail(points, step);
+      traces.push(lineTrace(path, "#ff4fd8", 10, "Prompt path"));
+      traces.push(glowTrace(trail, "#ff4fd8", 14, 0.22, "Prompt trail"));
+      traces.push(markerTrace(trail, "#ff4fd8", 7, 1, "Observed states", trail.map((_, index) => String(index + 1)), true));
+
+      for (let index = 0; index < Math.min(step, points.length - 1); index += 1) {
+        const colors = ["#ff4fd8", "#ff7fcb", "#f59e0b", "#2dd4bf", "#38bdf8", "#8b5cf6", "#34d399", "#fb7185"];
+        traces.push(coneTrace(points[index], points[index + 1], colors[index % colors.length], `segment ${index + 1}`, 0.10, 0.90));
+      }
+
+      const currentPoint = points[step];
+      traces.push(glowTrace([currentPoint], "#ffffff", 36, 0.16, "Current halo"));
+      if (elements.semanticRings.checked) {
+        traces.push(orbitRing(currentPoint, 0.06, "xy", "#ffffff", 4, 0.16));
+        traces.push(orbitRing(currentPoint, 0.08, "yz", "#ff4fd8", 3, 0.12));
+      }
+      traces.push({
+        type: "scatter3d",
+        mode: "markers+text",
+        x: [currentPoint[0]],
+        y: [currentPoint[1]],
+        z: [currentPoint[2]],
+        text: ["current"],
+        textposition: "top center",
+        textfont: { size: 15, color: "#ffffff" },
+        marker: {
+          size: 11,
+          color: "#f9fbff",
+          opacity: 1,
+          line: { color: "#ff4fd8", width: 5 }
+        },
+        hovertext: [prefixes[step]],
+        hoverinfo: "text",
+        name: "Current state"
+      });
+
+      if (elements.genderArrows.checked) {
+        const man = anchorLookup.man;
+        const woman = anchorLookup.woman;
+        const king = anchorLookup.king;
+        const queen = anchorLookup.queen;
+        const projected = add(king, sub(woman, man));
+        traces.push(lineTrace([man, woman], "#38bdf8", 12, "Gender direction"));
+        traces.push(coneTrace(man, woman, "#38bdf8", "man to woman", 0.14, 0.94));
+        traces.push(lineTrace([king, queen], "#f59e0b", 12, "Royal pair"));
+        traces.push(coneTrace(king, queen, "#f59e0b", "king to queen", 0.14, 0.94));
+        traces.push(lineTrace([king, projected], "#34d399", 10, "Projected shift", "dash"));
+        traces.push(coneTrace(king, projected, "#34d399", "projected shift", 0.12, 0.90));
+        traces.push(glowTrace([projected], "#34d399", 24, 0.18, "Projected glow"));
+        traces.push({
+          type: "scatter3d",
+          mode: "markers+text",
+          x: [projected[0]],
+          y: [projected[1]],
+          z: [projected[2]],
+          text: ["king + gender direction"],
+          textposition: "middle right",
+          textfont: { size: 13, color: "#f8fbff" },
+          marker: { size: 8, color: "#34d399", line: { color: "#ffffff", width: 1.2 } },
+          hoverinfo: "skip",
+          name: "Projected point"
+        });
+      }
+
+      return { traces, tokens, prefixes, step };
+    }
+
+    function layout() {
+      return {
+        margin: { l: 0, r: 0, t: 8, b: 0 },
+        height: document.getElementById("plot").clientHeight || 660,
+        paper_bgcolor: "#02040d",
+        plot_bgcolor: "#02040d",
+        font: { color: "#eef6ff", size: 13 },
+        legend: {
+          orientation: "h",
+          yanchor: "bottom",
+          y: 0.01,
+          xanchor: "left",
+          x: 0.01,
+          bgcolor: "rgba(4,8,18,0.50)",
+          bordercolor: "rgba(99,102,241,0.18)",
+          borderwidth: 1,
+          font: { color: "#eef6ff", size: 12 }
+        },
+        scene: {
+          bgcolor: "#02040d",
+          xaxis: {
+            title: { text: "dim 1", font: { color: "#9bdcff", size: 14 } },
+            tickfont: { color: "#dbeafe", size: 11 },
+            backgroundcolor: "rgba(56,189,248,0.03)",
+            gridcolor: "rgba(255,255,255,0.10)",
+            zerolinecolor: "rgba(255,255,255,0.18)",
+            color: "#dbeafe",
+            showspikes: false
+          },
+          yaxis: {
+            title: { text: "dim 2", font: { color: "#c4b5fd", size: 14 } },
+            tickfont: { color: "#dbeafe", size: 11 },
+            backgroundcolor: "rgba(139,92,246,0.03)",
+            gridcolor: "rgba(255,255,255,0.10)",
+            zerolinecolor: "rgba(255,255,255,0.18)",
+            color: "#dbeafe",
+            showspikes: false
+          },
+          zaxis: {
+            title: { text: "dim 3", font: { color: "#f9a8d4", size: 14 } },
+            tickfont: { color: "#dbeafe", size: 11 },
+            backgroundcolor: "rgba(236,72,153,0.03)",
+            gridcolor: "rgba(255,255,255,0.10)",
+            zerolinecolor: "rgba(255,255,255,0.18)",
+            color: "#dbeafe",
+            showspikes: false
+          },
+          camera: { eye: { x: 1.82, y: 1.32, z: 1.16 } },
+          aspectmode: "cube"
+        }
+      };
+    }
+
+    function updateSequenceTable(tokens, prefixes, step) {
+      elements.sequenceTable.innerHTML = prefixes.map((prefix, index) => `
+        <tr class="${index === step ? "is-current" : ""}">
+          <td>${index + 1}</td>
+          <td>${tokens[index]}</td>
+          <td>${prefix}</td>
+        </tr>
+      `).join("");
+    }
+
+    function render() {
+      const { traces, tokens, prefixes, step } = buildPlot();
+      state.step = step;
+      elements.stepRange.max = Math.max(prefixes.length - 1, 0);
+      elements.stepRange.value = step;
+      elements.stepValue.textContent = String(step);
+      elements.stepMax.textContent = String(prefixes.length - 1);
+      elements.stepSummary.textContent = `Step ${step + 1} of ${prefixes.length}`;
+      elements.progressFill.style.width = `${((step + 1) / prefixes.length) * 100}%`;
+      elements.currentText.textContent = prefixes[step] || "";
+      elements.newWord.textContent = tokens[step] || "";
+      elements.speedValue.textContent = `${(Number(elements.speedRange.value) / 1000).toFixed(2)} sec`;
+      updateSequenceTable(tokens, prefixes, step);
+
+      Plotly.react("plot", traces, layout(), {
+        responsive: true,
+        displaylogo: false,
+        modeBarButtonsToRemove: ["lasso2d", "select2d"]
+      });
+    }
+
+    function stopPlayback() {
+      if (state.timer) {
+        clearInterval(state.timer);
+        state.timer = null;
+      }
+    }
+
+    function setup() {
+      Object.keys(demoSequences).forEach((name) => {
+        const option = document.createElement("option");
+        option.value = name;
+        option.textContent = name;
+        elements.sequenceSelect.appendChild(option);
+      });
+
+      elements.sequenceSelect.addEventListener("change", () => {
+        stopPlayback();
+        state.step = 0;
+        render();
+      });
+
+      elements.prevButton.addEventListener("click", () => {
+        stopPlayback();
+        state.step = Math.max(0, state.step - 1);
+        render();
+      });
+
+      elements.nextButton.addEventListener("click", () => {
+        stopPlayback();
+        state.step += 1;
+        render();
+      });
+
+      elements.resetButton.addEventListener("click", () => {
+        stopPlayback();
+        state.step = 0;
+        render();
+      });
+
+      elements.playButton.addEventListener("click", () => {
+        stopPlayback();
+        state.timer = setInterval(() => {
+          const maxStep = Number(elements.stepRange.max);
+          if (state.step >= maxStep) {
+            stopPlayback();
+            return;
+          }
+          state.step += 1;
+          render();
+        }, Number(elements.speedRange.value));
+      });
+
+      elements.stopButton.addEventListener("click", stopPlayback);
+
+      elements.stepRange.addEventListener("input", () => {
+        stopPlayback();
+        state.step = Number(elements.stepRange.value);
+        render();
+      });
+
+      elements.speedRange.addEventListener("input", () => {
+        elements.speedValue.textContent = `${(Number(elements.speedRange.value) / 1000).toFixed(2)} sec`;
+      });
+
+      [elements.anchorLabels, elements.genderArrows, elements.semanticRings].forEach((control) => {
+        control.addEventListener("change", render);
+      });
+
+      window.addEventListener("resize", () => {
+        window.clearTimeout(window.__resizeTimer);
+        window.__resizeTimer = window.setTimeout(render, 150);
+      });
+
+      render();
+    }
+
+    if (window.Plotly) {
+      setup();
+    } else {
+      document.getElementById("plot").textContent = "Visualization library could not be loaded.";
+    }
+  </script>
+</body>
+</html>
