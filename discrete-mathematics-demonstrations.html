@@ -1,0 +1,729 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Demonstrations for Discrete Mathematics | Mahipal Jadeja</title>
+  <meta name="description" content="Interactive graph theory demonstrations for Discrete Mathematics: Eulerian Circuit vs Hamiltonian Cycle.">
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    :root{
+      --paper:#fffaf2;
+      --ink:#172333;
+      --sub:#596575;
+      --rule:#dfd4c5;
+      --teal:#007a78;
+      --rose:#bd3455;
+      --amber:#d6941f;
+      --blue:#315f9a;
+      --green:#2f8652;
+      --soft-teal:#e1f3f0;
+      --soft-rose:#fae5eb;
+      --soft-amber:#fff0c5;
+    }
+
+    body{
+      background:
+        linear-gradient(90deg, rgba(23,35,51,.05) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(23,35,51,.05) 1px, transparent 1px),
+        #f6f1e7;
+      background-size:36px 36px;
+      color:var(--ink);
+    }
+
+    .container{max-width:1180px}
+    .hero,.card,.nav,.footer{border-radius:8px}
+    .hero{background:rgba(255,253,250,.94)}
+    .hero h1{font-size:clamp(32px,5vw,68px);line-height:.98;letter-spacing:0}
+    .lead{font-weight:800;color:#0d514f}
+    .topic-strip,.graph-grid,.char-layout,.route-grid,.explosion-grid,.fact-grid{
+      display:grid;
+      gap:16px;
+    }
+
+    .topic-strip{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:18px}
+    .topic{
+      border:1px solid var(--rule);
+      border-radius:8px;
+      padding:16px;
+      background:var(--paper);
+    }
+    .topic strong{display:block;margin-bottom:6px;color:var(--ink);font-size:18px}
+    .topic.edge strong{color:var(--teal)}
+    .topic.vertex strong{color:var(--rose)}
+    .section-title{margin-top:28px}
+    .section-title p{max-width:760px}
+
+    .graph-grid{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:16px}
+    .graph-panel{
+      border:1px solid var(--rule);
+      border-radius:8px;
+      padding:16px;
+      background:rgba(255,253,250,.96);
+    }
+    .graph-panel.euler{border-color:#9ed4ce}
+    .graph-panel.ham{border-color:#e7a8ba}
+    .panel-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+    .kicker{margin:0;color:var(--blue);font-size:12px;font-weight:800;text-transform:uppercase}
+    .panel-head h2,.stats h2{margin:4px 0 0;font-size:20px}
+    .metric{
+      min-width:118px;
+      border:1px solid var(--rule);
+      border-radius:8px;
+      padding:8px 10px;
+      background:#fff;
+      line-height:1.25;
+    }
+    .metric span{display:block;color:var(--sub);font-size:12px;font-weight:800}
+    .metric strong{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+    .graph-svg{
+      width:100%;
+      min-height:250px;
+      margin:10px 0;
+      border:1px solid #e9dfd2;
+      border-radius:8px;
+      background:radial-gradient(circle at center, rgba(0,122,120,.08), transparent 55%), var(--paper);
+    }
+    .edge{stroke:#8c98a5;stroke-width:4;stroke-linecap:round;opacity:.75}
+    .edge.active{stroke:var(--amber);stroke-width:8;opacity:1}
+    .node circle{fill:#fff;stroke:#24313d;stroke-width:3}
+    .node.active circle{fill:var(--soft-rose);stroke:var(--rose)}
+    .node.good circle{fill:#e6f5ec;stroke:var(--green)}
+    .node.bad circle{fill:var(--soft-rose);stroke:var(--rose)}
+    .node text{fill:var(--ink);font-size:15px;font-weight:850;dominant-baseline:middle;text-anchor:middle}
+    .degree-text{fill:#526071;font-size:12px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-weight:800}
+    .result{min-height:44px;color:var(--sub)}
+    .control-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+    button.btn{font-weight:800}
+    button.btnPrimary{color:#fff}
+
+    .char-layout{grid-template-columns:minmax(320px,.95fr) minmax(320px,1.05fr);margin-top:16px}
+    .degree-list{
+      display:grid;
+      align-content:start;
+      gap:8px;
+      border:1px solid var(--rule);
+      border-radius:8px;
+      padding:16px;
+      background:rgba(255,253,250,.96);
+    }
+    .degree-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      min-height:42px;
+      padding:8px 10px;
+      border:1px solid #e7ddcf;
+      border-radius:8px;
+      background:#fffaf3;
+      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+      font-weight:800;
+    }
+    .degree-row.good{background:#e9f7ee;border-color:#9fd5b4;color:#1d6840}
+    .degree-row.bad{background:var(--soft-rose);border-color:#eca8ba;color:#8d1834}
+    .shortcut{
+      display:grid;
+      gap:6px;
+      margin-top:8px;
+      padding:14px;
+      border:1px dashed #b8ac99;
+      border-radius:8px;
+      background:#fff8e8;
+    }
+    .shortcut.active{border-style:solid;border-color:var(--amber);background:var(--soft-amber)}
+
+    .fact-grid{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:16px}
+    .fact{border:1px solid var(--rule);border-radius:8px;background:#fff;padding:18px}
+    .fact.emphasis{border-color:#e7a8ba;background:#fff8fa}
+    .fact h2{margin:0 0 8px;font-size:19px}
+
+    .route-grid{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:16px}
+    .route{
+      margin:0;
+      padding:16px;
+      list-style:none;
+      border:1px solid var(--rule);
+      border-radius:8px;
+      background:#fff;
+    }
+    .route li{
+      display:grid;
+      grid-template-columns:38px minmax(0,1fr);
+      gap:10px;
+      align-items:center;
+      min-height:46px;
+      border-bottom:1px solid #eee5d9;
+      font-weight:760;
+    }
+    .route li:last-child{border-bottom:0}
+    .route span{
+      display:grid;
+      place-items:center;
+      width:32px;
+      height:32px;
+      border-radius:8px;
+      background:#eef6f5;
+      color:var(--teal);
+      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+      font-weight:900;
+    }
+    .route.ham span{background:#fff0f3;color:var(--rose)}
+
+    .slider-row{
+      display:flex;
+      align-items:center;
+      gap:16px;
+      margin-top:16px;
+      padding:12px 14px;
+      border:1px solid var(--rule);
+      border-radius:8px;
+      background:#fff;
+    }
+    .slider-row label{min-width:100px;font-weight:850}
+    .slider-row input{width:100%;accent-color:var(--rose)}
+    .explosion-grid{grid-template-columns:.85fr 1fr 1.2fr;margin-top:16px}
+    .stats,.chart{
+      display:grid;
+      align-content:start;
+      gap:12px;
+      border:1px solid var(--rule);
+      border-radius:8px;
+      padding:16px;
+      background:#fff;
+    }
+    .bar-row{display:grid;grid-template-columns:110px minmax(0,1fr);gap:12px;align-items:center}
+    .bar-row>span{font-weight:850}
+    .bar-track{height:24px;border:1px solid #d6ccbc;border-radius:8px;background:#fff7ea;overflow:hidden}
+    .bar{height:100%;border-radius:7px;transition:width .25s ease}
+    .bar.euler{background:var(--teal)}
+    .bar.ham{background:var(--rose)}
+
+    @media(max-width:900px){
+      .topic-strip,.graph-grid,.char-layout,.route-grid,.explosion-grid,.fact-grid{grid-template-columns:1fr}
+    }
+    @media(max-width:560px){
+      .panel-head,.slider-row{flex-direction:column;align-items:stretch}
+      .btn{width:100%;text-align:center}
+      .bar-row{grid-template-columns:1fr;gap:6px}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="nav">
+      <div class="brand">Mahipal Jadeja</div>
+      <div class="links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="tools.html">Tools</a>
+        <a href="teaching-demonstrations.html">Teaching Demos</a>
+        <a href="talks.html">Talks</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+
+    <div class="hero">
+      <p class="kicker">Demonstrations for Discrete Mathematics</p>
+      <h1>Why Characterization Matters in Computer Science</h1>
+      <p class="lead">Characterization &rarr; Efficient Decision Procedure &rarr; Efficient Algorithm</p>
+      <p>
+        Compare Eulerian Circuit and Hamiltonian Cycle: two graph problems whose definitions differ by a few words, yet whose computational behavior is dramatically different.
+      </p>
+      <div class="topic-strip">
+        <div class="topic edge">
+          <strong>Eulerian Circuit</strong>
+          Can we start at a vertex, traverse every <b>EDGE</b> exactly once, and return to the starting vertex?
+        </div>
+        <div class="topic vertex">
+          <strong>Hamiltonian Cycle</strong>
+          Can we start at a vertex, visit every <b>VERTEX</b> exactly once, and return to the starting vertex?
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">
+      <p class="kicker">Section 1</p>
+      <h1>Side-by-side interactive graph</h1>
+      <p id="example-note"></p>
+    </div>
+
+    <div class="graph-grid">
+      <section class="graph-panel euler">
+        <div class="panel-head">
+          <div>
+            <p class="kicker">Every edge exactly once</p>
+            <h2>Eulerian Circuit</h2>
+          </div>
+          <div class="metric"><span>Edges used</span><strong id="edge-counter">0 / 0</strong></div>
+        </div>
+        <svg id="euler-svg" class="graph-svg" viewBox="0 0 340 300" role="img" aria-label="Eulerian circuit graph"></svg>
+        <p id="euler-result" class="result">Ready to inspect edges.</p>
+      </section>
+
+      <section class="graph-panel ham">
+        <div class="panel-head">
+          <div>
+            <p class="kicker">Every vertex exactly once</p>
+            <h2>Hamiltonian Cycle</h2>
+          </div>
+          <div class="metric"><span>Vertices visited</span><strong id="vertex-counter">0 / 0</strong></div>
+        </div>
+        <svg id="ham-svg" class="graph-svg" viewBox="0 0 340 300" role="img" aria-label="Hamiltonian cycle graph"></svg>
+        <p id="ham-result" class="result">Ready to search vertices.</p>
+      </section>
+    </div>
+
+    <div class="control-row" aria-label="Graph controls">
+      <button class="btn btnPrimary" id="show-euler" type="button">Show Eulerian Circuit</button>
+      <button class="btn btnPrimary" id="show-ham" type="button">Show Hamiltonian Cycle</button>
+      <button class="btn" id="reset" type="button">Reset</button>
+      <button class="btn" id="next-example" type="button">Next Example</button>
+      <button class="btn" id="random-graph" type="button">Create Random Graph</button>
+    </div>
+
+    <div class="section-title">
+      <p class="kicker">Section 2</p>
+      <h1>The Power of Characterization</h1>
+      <p>A connected undirected graph has an Eulerian circuit if and only if every vertex has even degree.</p>
+    </div>
+
+    <div class="char-layout">
+      <section class="graph-panel">
+        <svg id="char-svg" class="graph-svg" viewBox="0 0 340 300" role="img" aria-label="Degree characterization graph"></svg>
+        <button class="btn btnPrimary" id="check-char" type="button">Check Characterization</button>
+      </section>
+      <section class="degree-list" id="degree-list" aria-live="polite"></section>
+    </div>
+
+    <div class="section-title">
+      <p class="kicker">Section 3</p>
+      <h1>Can We Do the Same for Hamiltonian Cycle?</h1>
+    </div>
+
+    <div class="fact-grid">
+      <div class="fact">
+        <h2>Observable properties</h2>
+        <p id="property-summary"></p>
+      </div>
+      <div class="fact emphasis">
+        <h2>No matching simple shortcut is known</h2>
+        <p>
+          There are useful necessary conditions and useful sufficient conditions, but no similarly simple efficiently checkable necessary and sufficient characterization is known that solves the general problem in polynomial time.
+        </p>
+      </div>
+      <div class="fact">
+        <h2>Complexity status</h2>
+        <p>
+          Hamiltonian Cycle is NP-complete. The backtracking solver here is an educational visualization, not a claim about the best possible Hamiltonian algorithm.
+        </p>
+      </div>
+    </div>
+
+    <div class="section-title">
+      <p class="kicker">Section 4</p>
+      <h1>Search versus Characterization</h1>
+    </div>
+
+    <div class="route-grid">
+      <ol class="route">
+        <li><span>1</span>Inspect structure</li>
+        <li><span>2</span>Check connectivity</li>
+        <li><span>3</span>Check vertex degrees</li>
+        <li><span>4</span>Construct circuit using Hierholzer's algorithm</li>
+        <li><span>O</span>Complexity: O(V + E)</li>
+      </ol>
+      <ol class="route ham">
+        <li><span>1</span>Try possible choices of vertices</li>
+        <li><span>2</span>Backtrack when a route fails</li>
+        <li><span>3</span>Explore alternative possibilities</li>
+        <li><span>4</span>Continue until found or exhausted</li>
+        <li><span>NP</span>General decision problem: NP-complete</li>
+      </ol>
+    </div>
+
+    <div class="section-title">
+      <p class="kicker">Section 5</p>
+      <h1>Visualize Computational Explosion</h1>
+      <p>Similar looking problem statements do not imply similar computational complexity.</p>
+    </div>
+
+    <div class="slider-row">
+      <label for="vertex-count">Vertices: <span id="size-label">8</span></label>
+      <input id="vertex-count" type="range" min="4" max="10" value="8">
+    </div>
+
+    <div class="explosion-grid">
+      <section class="stats">
+        <h2>Eulerian characterization work</h2>
+        <div class="metric"><span>Degree checks</span><strong id="degree-checks">0</strong></div>
+        <div class="metric"><span>Edges processed</span><strong id="edges-processed">0</strong></div>
+      </section>
+      <section class="stats">
+        <h2>Hamiltonian backtracking work</h2>
+        <div class="metric"><span>Search states explored</span><strong id="states">0</strong></div>
+        <div class="metric"><span>Backtracking steps</span><strong id="backs">0</strong></div>
+        <div class="metric"><span>Candidate paths attempted</span><strong id="attempts">0</strong></div>
+        <p id="cap-note"></p>
+      </section>
+      <section class="chart" aria-label="Work comparison chart">
+        <div class="bar-row">
+          <span>Eulerian</span>
+          <div class="bar-track"><div id="euler-bar" class="bar euler"></div></div>
+        </div>
+        <div class="bar-row">
+          <span>Hamiltonian</span>
+          <div class="bar-track"><div id="ham-bar" class="bar ham"></div></div>
+        </div>
+        <p>
+          The Eulerian side is driven by structural checks. The Hamiltonian side can be pulled into many alternative vertex orders before it can rule a graph out.
+        </p>
+      </section>
+    </div>
+
+    <div class="footer">
+      <div><a href="teaching-demonstrations.html">Back to Teaching Demonstrations</a></div>
+      <div>&copy; <span id="y"></span> Mahipal Jadeja</div>
+    </div>
+  </div>
+
+  <script>
+    const labels = "ABCDEFGHIJ".split("");
+    const ns = "http://www.w3.org/2000/svg";
+    const fmt = new Intl.NumberFormat("en-US");
+
+    function circleVertices(count, radius=126){
+      return Array.from({length:count},(_,i)=>{
+        const angle = -Math.PI/2 + i*Math.PI*2/count;
+        return {id:i,label:labels[i],x:170+Math.cos(angle)*radius,y:150+Math.sin(angle)*radius};
+      });
+    }
+    function edgeKey(a,b){return a<b ? `${a}-${b}` : `${b}-${a}`;}
+    function edgeList(pairs,prefix){return pairs.map(([a,b],i)=>({id:`${prefix}${i}`,a,b}));}
+
+    const examples = [
+      {
+        name:"Six-vertex even graph",
+        note:"Both highlighted ideas can be seen on the same connected graph.",
+        vertices:circleVertices(6),
+        edges:edgeList([[0,1],[1,2],[2,3],[3,4],[4,5],[5,0],[0,2],[2,4],[4,0]],"e")
+      },
+      {
+        name:"Two cycles sharing A",
+        note:"Eulerian by degree, but the shared cut vertex blocks a Hamiltonian cycle.",
+        vertices:[
+          {id:0,label:"A",x:170,y:150},{id:1,label:"B",x:82,y:70},{id:2,label:"C",x:82,y:230},
+          {id:3,label:"D",x:258,y:70},{id:4,label:"E",x:258,y:230}
+        ],
+        edges:edgeList([[0,1],[1,2],[2,0],[0,3],[3,4],[4,0]],"f")
+      },
+      {
+        name:"Complete graph K4",
+        note:"Hamiltonian cycles are easy to spot here, while every vertex has odd degree.",
+        vertices:circleVertices(4,112),
+        edges:edgeList([[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]],"k")
+      }
+    ];
+
+    let graph = examples[0];
+    let exampleIndex = 0;
+    let eulerCircuit = null;
+    let hamCycle = null;
+    let eulerStep = 0;
+    let hamStep = 0;
+    let eulerTimer = null;
+    let hamTimer = null;
+    let checkActive = false;
+
+    function characterize(g){
+      const degrees = new Map(g.vertices.map(v=>[v.id,0]));
+      const adj = new Map(g.vertices.map(v=>[v.id,[]]));
+      g.edges.forEach(e=>{
+        degrees.set(e.a,(degrees.get(e.a)||0)+1);
+        degrees.set(e.b,(degrees.get(e.b)||0)+1);
+        adj.get(e.a).push(e.b);
+        adj.get(e.b).push(e.a);
+      });
+      const start = g.vertices.find(v=>(degrees.get(v.id)||0)>0);
+      const seen = new Set();
+      if(start){
+        const stack = [start.id];
+        while(stack.length){
+          const cur = stack.pop();
+          if(seen.has(cur)) continue;
+          seen.add(cur);
+          adj.get(cur).forEach(n=>{if(!seen.has(n)) stack.push(n);});
+        }
+      }
+      const connected = g.vertices.every(v=>(degrees.get(v.id)||0)===0 || seen.has(v.id));
+      const odd = new Set(g.vertices.filter(v=>(degrees.get(v.id)||0)%2===1).map(v=>v.id));
+      return {degrees,odd,connected,eulerian:connected && odd.size===0};
+    }
+
+    function eulerianCircuit(g){
+      if(!characterize(g).eulerian) return null;
+      const adj = new Map(g.vertices.map(v=>[v.id,[]]));
+      g.edges.forEach(e=>{
+        adj.get(e.a).push({edgeId:e.id,next:e.b});
+        adj.get(e.b).push({edgeId:e.id,next:e.a});
+      });
+      const start = g.vertices.find(v=>(adj.get(v.id).length)>0);
+      if(!start) return [];
+      const used = new Set();
+      const stack = [{vertex:start.id}];
+      const circuit = [];
+      while(stack.length){
+        const top = stack[stack.length-1];
+        const next = adj.get(top.vertex).find(x=>!used.has(x.edgeId));
+        if(next){
+          used.add(next.edgeId);
+          stack.push({vertex:next.next,via:next.edgeId});
+        }else{
+          const popped = stack.pop();
+          if(popped.via) circuit.push(popped.via);
+        }
+      }
+      return circuit.reverse();
+    }
+
+    function solveHamiltonian(g,cap=250000){
+      const edges = new Set(g.edges.map(e=>edgeKey(e.a,e.b)));
+      const start = g.vertices[0].id;
+      const path = [start];
+      const used = new Set([start]);
+      let states = 0, backtracks = 0, attempts = 0, capped = false, cycle = null;
+      function neighbors(v){
+        return g.vertices.map(x=>x.id).filter(x=>x!==v && edges.has(edgeKey(v,x)));
+      }
+      function dfs(cur){
+        if(states>=cap){capped=true;return false;}
+        states++;
+        if(path.length===g.vertices.length){
+          attempts++;
+          if(edges.has(edgeKey(cur,start))){cycle=[...path,start];return true;}
+          return false;
+        }
+        for(const next of neighbors(cur)){
+          if(used.has(next)) continue;
+          attempts++;
+          used.add(next);
+          path.push(next);
+          if(dfs(next)) return true;
+          path.pop();
+          used.delete(next);
+          backtracks++;
+          if(capped) return false;
+        }
+        return false;
+      }
+      dfs(start);
+      return {cycle,states,backtracks,attempts,capped};
+    }
+
+    function randomGraph(){
+      const count = 5 + Math.floor(Math.random()*3);
+      const vertices = circleVertices(count,122);
+      const set = new Set();
+      for(let i=0;i<count;i++) set.add(edgeKey(i,(i+1)%count));
+      for(let a=0;a<count;a++){
+        for(let b=a+1;b<count;b++){
+          if(Math.random()<.32) set.add(edgeKey(a,b));
+        }
+      }
+      return {
+        name:`Random connected graph (${count} vertices)`,
+        note:"A connected cycle backbone plus a few extra edges.",
+        vertices,
+        edges:[...set].map((key,i)=>{
+          const [a,b]=key.split("-").map(Number);
+          return {id:`r${i}`,a,b};
+        })
+      };
+    }
+
+    function hardSearchGraph(count){
+      const set = new Set();
+      for(let a=0;a<count-1;a++){
+        for(let b=a+1;b<count-1;b++) set.add(edgeKey(a,b));
+      }
+      set.add(edgeKey(0,count-1));
+      return {
+        vertices:circleVertices(count,124),
+        edges:[...set].map((key,i)=>{
+          const [a,b]=key.split("-").map(Number);
+          return {id:`h${i}`,a,b};
+        })
+      };
+    }
+
+    function drawGraph(svgId,g,edgeHighlights=new Set(),vertexHighlights=new Set(),showDegrees=false,char=null,hamEdges=new Set()){
+      const svg = document.getElementById(svgId);
+      svg.replaceChildren();
+      g.edges.forEach(e=>{
+        const a = g.vertices.find(v=>v.id===e.a);
+        const b = g.vertices.find(v=>v.id===e.b);
+        const line = document.createElementNS(ns,"line");
+        line.setAttribute("x1",a.x); line.setAttribute("y1",a.y);
+        line.setAttribute("x2",b.x); line.setAttribute("y2",b.y);
+        line.setAttribute("class",`edge ${edgeHighlights.has(e.id)||hamEdges.has(e.id) ? "active" : ""}`);
+        svg.appendChild(line);
+      });
+      g.vertices.forEach(v=>{
+        const group = document.createElementNS(ns,"g");
+        const status = char ? (char.odd.has(v.id) ? "bad" : "good") : "";
+        group.setAttribute("class",`node ${vertexHighlights.has(v.id) ? "active" : ""} ${status}`);
+        const circle = document.createElementNS(ns,"circle");
+        circle.setAttribute("cx",v.x); circle.setAttribute("cy",v.y); circle.setAttribute("r","18");
+        const label = document.createElementNS(ns,"text");
+        label.setAttribute("x",v.x); label.setAttribute("y",v.y+1); label.textContent = v.label;
+        group.appendChild(circle);
+        group.appendChild(label);
+        if(showDegrees){
+          const d = document.createElementNS(ns,"text");
+          d.setAttribute("x",v.x); d.setAttribute("y",v.y-28);
+          d.setAttribute("class","degree-text");
+          d.setAttribute("text-anchor","middle");
+          d.textContent = `d=${char.degrees.get(v.id)||0}`;
+          group.appendChild(d);
+        }
+        svg.appendChild(group);
+      });
+    }
+
+    function renderDegrees(){
+      const c = characterize(graph);
+      const list = document.getElementById("degree-list");
+      list.replaceChildren();
+      graph.vertices.forEach(v=>{
+        const row = document.createElement("div");
+        const odd = c.odd.has(v.id);
+        row.className = `degree-row ${checkActive ? (odd ? "bad" : "good") : ""}`;
+        row.innerHTML = `<span>${v.label}: degree ${c.degrees.get(v.id)||0}</span><span>${checkActive ? (odd ? "odd" : "even") : "..."}</span>`;
+        list.appendChild(row);
+      });
+      const shortcut = document.createElement("div");
+      shortcut.className = `shortcut ${checkActive ? "active" : ""}`;
+      if(!checkActive){
+        shortcut.innerHTML = "<strong>Connectivity and parity are enough to decide this case.</strong><span>No exhaustive route search is required.</span>";
+      }else if(c.eulerian){
+        shortcut.innerHTML = "<strong>All vertices have even degree + graph is connected.</strong><span>Therefore an Eulerian circuit exists.</span>";
+      }else if(c.connected){
+        shortcut.innerHTML = "<strong>The shortcut rejects this graph.</strong><span>At least one odd degree vertex means no Eulerian circuit.</span>";
+      }else{
+        shortcut.innerHTML = "<strong>The shortcut rejects this graph.</strong><span>The graph is not connected, so no Eulerian circuit exists.</span>";
+      }
+      list.appendChild(shortcut);
+      document.getElementById("property-summary").textContent =
+        `The current graph has ${graph.vertices.length} vertices, ${graph.edges.length} edges, and is ${c.connected ? "connected" : "not connected"}.`;
+    }
+
+    function render(){
+      const c = characterize(graph);
+      document.getElementById("example-note").textContent = `${graph.name}: ${graph.note}`;
+      const eEdges = new Set((eulerCircuit||[]).slice(0,eulerStep));
+      const hVerts = new Set((hamCycle||[]).slice(0,hamStep));
+      const hEdges = new Set();
+      if(hamCycle){
+        for(let i=1;i<hamStep && i<hamCycle.length;i++){
+          const key = edgeKey(hamCycle[i-1],hamCycle[i]);
+          const match = graph.edges.find(e=>edgeKey(e.a,e.b)===key);
+          if(match) hEdges.add(match.id);
+        }
+      }
+      drawGraph("euler-svg",graph,eEdges);
+      drawGraph("ham-svg",graph,new Set(),hVerts,false,null,hEdges);
+      drawGraph("char-svg",graph,new Set(),new Set(),checkActive,checkActive ? c : null);
+      document.getElementById("edge-counter").textContent = `${Math.min(eulerStep,(eulerCircuit||[]).length)} / ${graph.edges.length}`;
+      document.getElementById("vertex-counter").textContent = `${Math.min(hamStep,(hamCycle||[]).length)} / ${graph.vertices.length}`;
+      renderDegrees();
+    }
+
+    function reset(){
+      clearTimeout(eulerTimer); clearTimeout(hamTimer);
+      eulerCircuit = null; hamCycle = null; eulerStep = 0; hamStep = 0;
+      document.getElementById("euler-result").textContent = "Ready to inspect edges.";
+      document.getElementById("ham-result").textContent = "Ready to search vertices.";
+      render();
+    }
+
+    function animateEuler(){
+      reset();
+      eulerCircuit = eulerianCircuit(graph);
+      if(eulerCircuit === null){
+        document.getElementById("euler-result").textContent = "No Eulerian circuit exists for this graph.";
+        render();
+        return;
+      }
+      document.getElementById("euler-result").textContent = "The route is built edge by edge.";
+      function tick(){
+        render();
+        if(eulerStep < eulerCircuit.length){
+          eulerStep++;
+          eulerTimer = setTimeout(tick,520);
+        }
+      }
+      tick();
+    }
+
+    function animateHamiltonian(){
+      reset();
+      const result = solveHamiltonian(graph);
+      hamCycle = result.cycle;
+      document.getElementById("ham-result").textContent = result.cycle
+        ? `Found after ${fmt.format(result.states)} search states.`
+        : `No Hamiltonian cycle found after ${fmt.format(result.states)} search states.`;
+      if(!hamCycle){render();return;}
+      function tick(){
+        render();
+        if(hamStep < hamCycle.length){
+          hamStep++;
+          hamTimer = setTimeout(tick,580);
+        }
+      }
+      tick();
+    }
+
+    function runExplosion(size){
+      const g = hardSearchGraph(size);
+      const result = solveHamiltonian(g);
+      const degreeChecks = g.vertices.length;
+      const edges = g.edges.length;
+      const largest = Math.max(1,result.states,degreeChecks+edges);
+      document.getElementById("degree-checks").textContent = fmt.format(degreeChecks);
+      document.getElementById("edges-processed").textContent = fmt.format(edges);
+      document.getElementById("states").textContent = fmt.format(result.states);
+      document.getElementById("backs").textContent = fmt.format(result.backtracks);
+      document.getElementById("attempts").textContent = fmt.format(result.attempts);
+      document.getElementById("cap-note").textContent = result.capped ? "Stopped at the visualization cap." : "";
+      document.getElementById("euler-bar").style.width = `${Math.max(6,(degreeChecks+edges)/largest*100)}%`;
+      document.getElementById("ham-bar").style.width = `${Math.max(6,result.states/largest*100)}%`;
+    }
+
+    document.getElementById("show-euler").addEventListener("click",animateEuler);
+    document.getElementById("show-ham").addEventListener("click",animateHamiltonian);
+    document.getElementById("reset").addEventListener("click",reset);
+    document.getElementById("next-example").addEventListener("click",()=>{
+      exampleIndex = (exampleIndex+1)%examples.length;
+      graph = examples[exampleIndex];
+      checkActive = false;
+      reset();
+    });
+    document.getElementById("random-graph").addEventListener("click",()=>{
+      graph = randomGraph();
+      checkActive = false;
+      reset();
+    });
+    document.getElementById("check-char").addEventListener("click",()=>{
+      checkActive = true;
+      render();
+    });
+    document.getElementById("vertex-count").addEventListener("input",(event)=>{
+      const size = Number(event.target.value);
+      document.getElementById("size-label").textContent = size;
+      runExplosion(size);
+    });
+    document.getElementById("y").textContent = new Date().getFullYear();
+    render();
+    runExplosion(8);
+  </script>
+</body>
+</html>
