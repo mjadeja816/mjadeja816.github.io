@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Rules of Inference: Introductory Examples | Mahipal Jadeja</title>
+  <meta name="description" content="A compact introductory page with three concrete examples showing how to use rules of inference effectively in Discrete Mathematics problem solving.">
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    :root{
+      --ink:#172333;
+      --sub:#4f5f6f;
+      --paper:#fffdf8;
+      --line:#dce3ea;
+      --blue:#2459a6;
+      --teal:#007a78;
+      --rose:#ba3152;
+      --amber:#b87618;
+      --green:#24724c;
+      --soft-blue:#e9f0ff;
+      --soft-teal:#e3f5f2;
+      --soft-rose:#fff0f4;
+      --soft-amber:#fff4d7;
+    }
+
+    body{
+      background:
+        linear-gradient(90deg, rgba(23,35,51,.045) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(23,35,51,.045) 1px, transparent 1px),
+        #f7f8fb;
+      background-size:34px 34px;
+      color:var(--ink);
+    }
+
+    .container{max-width:1120px}
+    .nav,.hero,.card,.footer,.panel,.example,.method-step{border-radius:8px}
+
+    .hero{
+      display:grid;
+      grid-template-columns:minmax(0,1.05fr) minmax(320px,.95fr);
+      gap:28px;
+      align-items:center;
+      background:rgba(255,253,248,.96);
+      padding:30px;
+    }
+
+    .kicker{
+      margin:0 0 8px;
+      color:var(--blue);
+      font-size:12px;
+      font-weight:850;
+      letter-spacing:0;
+      text-transform:uppercase;
+    }
+
+    .hero h1{
+      font-size:clamp(32px,5vw,58px);
+      line-height:1.02;
+      letter-spacing:0;
+      max-width:760px;
+    }
+
+    .lead{
+      max-width:700px;
+      color:#263546;
+      font-size:18px;
+      font-weight:720;
+    }
+
+    .logic-board{
+      border:1px solid var(--line);
+      background:#ffffff;
+      padding:18px;
+      box-shadow:0 18px 45px rgba(31,41,55,.08);
+    }
+
+    .formula-row{
+      display:grid;
+      grid-template-columns:52px minmax(0,1fr);
+      gap:12px;
+      align-items:center;
+      min-height:54px;
+      margin:8px 0;
+    }
+
+    .formula-row span{
+      display:grid;
+      place-items:center;
+      width:42px;
+      height:42px;
+      border-radius:8px;
+      background:var(--soft-blue);
+      color:var(--blue);
+      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+      font-weight:900;
+    }
+
+    .formula-row code,
+    .proof-line code,
+    .truth-pill code{
+      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+      font-size:.95em;
+      white-space:nowrap;
+    }
+
+    .formula-row strong{
+      display:block;
+      color:var(--ink);
+      font-size:15px;
+    }
+
+    .formula-row small{
+      color:var(--sub);
+      font-weight:700;
+    }
+
+    .rule-strip{
+      margin-top:16px;
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:12px;
+    }
+
+    .method-step{
+      border:1px solid var(--line);
+      background:#fff;
+      padding:14px;
+      min-height:122px;
+    }
+
+    .method-step strong{
+      display:block;
+      margin-bottom:6px;
+      color:var(--ink);
+      font-size:16px;
+    }
+
+    .method-step p{font-size:14px}
+
+    .section-title{
+      margin-top:28px;
+    }
+
+    .section-title h1{
+      font-size:clamp(26px,3.5vw,40px);
+      letter-spacing:0;
+    }
+
+    .section-title p{max-width:780px}
+
+    .example-grid{
+      margin-top:16px;
+      display:grid;
+      gap:16px;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+    }
+
+    .example{
+      display:grid;
+      align-content:start;
+      gap:14px;
+      border:1px solid var(--line);
+      background:var(--paper);
+      padding:18px;
+    }
+
+    .example:nth-child(1){border-top:5px solid var(--teal)}
+    .example:nth-child(2){border-top:5px solid var(--rose)}
+    .example:nth-child(3){border-top:5px solid var(--amber)}
+
+    .example h2{
+      font-size:22px;
+      line-height:1.2;
+    }
+
+    .tag-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .tag{
+      display:inline-flex;
+      align-items:center;
+      min-height:30px;
+      padding:6px 10px;
+      border:1px solid var(--line);
+      border-radius:8px;
+      background:#fff;
+      color:#2b3a4a;
+      font-size:12px;
+      font-weight:800;
+    }
+
+    .premises{
+      display:grid;
+      gap:8px;
+      margin:0;
+      padding:0;
+      list-style:none;
+    }
+
+    .premises li{
+      display:grid;
+      grid-template-columns:32px minmax(0,1fr);
+      gap:8px;
+      align-items:start;
+      min-height:38px;
+      margin:0;
+      padding:8px 0;
+      border-bottom:1px solid #edf0f4;
+      color:var(--sub);
+    }
+
+    .premises li:last-child{border-bottom:0}
+
+    .premises span{
+      display:grid;
+      place-items:center;
+      width:28px;
+      height:28px;
+      border-radius:8px;
+      background:#eef4fb;
+      color:var(--blue);
+      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+      font-weight:900;
+      font-size:12px;
+    }
+
+    .proof-box{
+      display:grid;
+      gap:8px;
+      border:1px solid #d9e4ef;
+      border-radius:8px;
+      background:#fff;
+      padding:12px;
+    }
+
+    .proof-line{
+      display:grid;
+      grid-template-columns:26px minmax(0,1fr);
+      gap:8px;
+      align-items:start;
+      color:#2e3e4f;
+      font-size:14px;
+      line-height:1.45;
+    }
+
+    .proof-line span{
+      color:var(--blue);
+      font-weight:900;
+      font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    }
+
+    .truth-row{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:8px;
+    }
+
+    .truth-pill{
+      min-height:54px;
+      border:1px solid var(--line);
+      border-radius:8px;
+      background:var(--soft-rose);
+      padding:10px;
+      color:#713045;
+      font-weight:800;
+    }
+
+    .truth-pill.valid{
+      background:#e9f7ee;
+      color:#18593a;
+    }
+
+    .takeaway{
+      border-left:5px solid var(--green);
+      background:#f2fbf5;
+      padding:12px;
+      color:#214b35;
+      font-weight:760;
+    }
+
+    .wide-panel{
+      grid-column:span 12;
+      display:grid;
+      grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);
+      gap:18px;
+      align-items:start;
+    }
+
+    .panel{
+      border:1px solid var(--line);
+      background:#fff;
+      padding:18px;
+    }
+
+    .rule-table{
+      width:100%;
+      min-width:640px;
+      border-collapse:collapse;
+      overflow:hidden;
+      border-radius:8px;
+      font-size:14px;
+    }
+
+    .rule-table th,
+    .rule-table td{
+      border:1px solid var(--line);
+      padding:10px;
+      vertical-align:top;
+      text-align:left;
+    }
+
+    .rule-table th{
+      background:#eef4fb;
+      color:#203348;
+    }
+
+    .rule-table td:first-child{
+      font-weight:850;
+      color:var(--ink);
+    }
+
+    .table-panel{
+      overflow-x:auto;
+    }
+
+    @media(max-width:920px){
+      .hero,.example-grid,.wide-panel,.rule-strip{grid-template-columns:1fr}
+      .hero{padding:24px 18px}
+    }
+
+    @media(max-width:560px){
+      .truth-row{grid-template-columns:1fr}
+      .formula-row{grid-template-columns:44px minmax(0,1fr)}
+      .hero h1{font-size:34px}
+      .btn{width:100%;text-align:center}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="nav">
+      <div class="brand">Mahipal Jadeja</div>
+      <div class="links">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="tools.html">Tools</a>
+        <a href="teaching-demonstrations.html">Teaching Demos</a>
+        <a href="talks.html">Talks</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+
+    <main>
+      <section class="hero">
+        <div>
+          <p class="kicker">Discrete Mathematics</p>
+          <h1>Rules of Inference: A Problem-Solving Starter</h1>
+          <p class="lead">
+            The central habit is simple: translate statements into symbols, match the left-hand side of a valid rule, then write the conclusion with the rule name and statement numbers.
+          </p>
+          <div class="cta">
+            <a class="btn btnPrimary" href="#examples">Study the examples</a>
+            <a class="btn" href="discrete-mathematics-demonstrations.html">More discrete math demos</a>
+          </div>
+        </div>
+
+        <aside class="logic-board" aria-label="Rules of inference visual summary">
+          <p class="kicker">Core Template</p>
+          <div class="formula-row">
+            <span>S</span>
+            <div><strong>Premises are assumed true</strong><small>Example: <code>P -&gt; Q</code>, <code>P</code></small></div>
+          </div>
+          <div class="formula-row">
+            <span>R</span>
+            <div><strong>Match a known rule pattern</strong><small>Example: Modus Ponens</small></div>
+          </div>
+          <div class="formula-row">
+            <span>C</span>
+            <div><strong>Derive only what follows</strong><small>Example: conclude <code>Q</code></small></div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="rule-strip" aria-label="Problem solving method">
+        <div class="method-step">
+          <strong>1. Name atoms</strong>
+          <p>Choose variables for simple statements: <code>P</code> for raining, <code>Q</code> for coffee, and so on.</p>
+        </div>
+        <div class="method-step">
+          <strong>2. Translate carefully</strong>
+          <p>Convert English into connectives: implication, conjunction, disjunction, and negation.</p>
+        </div>
+        <div class="method-step">
+          <strong>3. Match templates</strong>
+          <p>Look for the exact premise shape required by a rule such as Modus Ponens or Transitivity.</p>
+        </div>
+        <div class="method-step">
+          <strong>4. Justify each line</strong>
+          <p>Write the rule name and the earlier statement numbers used to obtain the new line.</p>
+        </div>
+      </section>
+
+      <section id="examples" class="section-title">
+        <p class="kicker">Three Concrete Examples</p>
+        <h1>From English statements to valid conclusions</h1>
+        <p>
+          These examples are based on the classroom flow in the two rules-of-inference transcripts: identify propositions, convert the argument, and decide whether the conclusion is valid.
+        </p>
+      </section>
+
+      <section class="example-grid">
+        <article class="example">
+          <div>
+            <p class="kicker">Example 1</p>
+            <h2>Guilty implies punished</h2>
+            <div class="tag-row">
+              <span class="tag">Modus Ponens</span>
+              <span class="tag">Valid</span>
+            </div>
+          </div>
+          <ul class="premises">
+            <li><span>P</span><div><b>P:</b> I am guilty.</div></li>
+            <li><span>Q</span><div><b>Q:</b> I must be punished.</div></li>
+            <li><span>1</span><div>If I am guilty, then I must be punished. <code>P -&gt; Q</code></div></li>
+            <li><span>2</span><div>I am guilty. <code>P</code></div></li>
+          </ul>
+          <div class="proof-box">
+            <div class="proof-line"><span>3</span><div><code>Q</code>, from 1 and 2 by Modus Ponens.</div></div>
+          </div>
+          <p class="takeaway">When both <code>P -&gt; Q</code> and <code>P</code> are available, the conclusion <code>Q</code> follows directly.</p>
+        </article>
+
+        <article class="example">
+          <div>
+            <p class="kicker">Example 2</p>
+            <h2>Not guilty does not imply not punished</h2>
+            <div class="tag-row">
+              <span class="tag">Invalid argument</span>
+              <span class="tag">Counterexample</span>
+            </div>
+          </div>
+          <ul class="premises">
+            <li><span>P</span><div><b>P:</b> I am guilty.</div></li>
+            <li><span>Q</span><div><b>Q:</b> I must be punished.</div></li>
+            <li><span>1</span><div>If I am guilty, then I must be punished. <code>P -&gt; Q</code></div></li>
+            <li><span>2</span><div>I am not guilty. <code>not P</code></div></li>
+            <li><span>C</span><div>Therefore I must not be punished. <code>not Q</code></div></li>
+          </ul>
+          <div class="truth-row">
+            <div class="truth-pill"><code>P = false</code><br><code>not P = true</code></div>
+            <div class="truth-pill"><code>Q = true</code><br><code>not Q = false</code></div>
+          </div>
+          <p class="takeaway">The premises can be true while the conclusion is false, so the argument is not valid.</p>
+        </article>
+
+        <article class="example">
+          <div>
+            <p class="kicker">Example 3</p>
+            <h2>Raining, party tonight, party tomorrow</h2>
+            <div class="tag-row">
+              <span class="tag">Transitivity</span>
+              <span class="tag">Valid</span>
+            </div>
+          </div>
+          <ul class="premises">
+            <li><span>P</span><div><b>P:</b> It rains today.</div></li>
+            <li><span>Q</span><div><b>Q:</b> We have a party tonight.</div></li>
+            <li><span>R</span><div><b>R:</b> We have a party tomorrow.</div></li>
+            <li><span>1</span><div>If it rains today, then no party tonight. <code>P -&gt; not Q</code></div></li>
+            <li><span>2</span><div>If no party tonight, then party tomorrow. <code>not Q -&gt; R</code></div></li>
+          </ul>
+          <div class="proof-box">
+            <div class="proof-line"><span>3</span><div><code>P -&gt; R</code>, from 1 and 2 by Transitivity.</div></div>
+          </div>
+          <p class="takeaway">If the conclusion of one implication is the premise of the next, chain them and remove the middle statement.</p>
+        </article>
+      </section>
+
+      <section class="grid">
+        <div class="card cardWide wide-panel">
+          <div class="panel table-panel">
+            <p class="kicker">Effective Use</p>
+            <h2>What students should write in solutions</h2>
+            <p>
+              A proof should read like a sequence of accountable moves. Number the given statements, derive one new statement at a time, and mention the rule used in parentheses. If the argument is invalid, give one truth assignment where every premise is true and the conclusion is false.
+            </p>
+          </div>
+          <div class="panel">
+            <table class="rule-table" aria-label="Common rules of inference">
+              <thead>
+                <tr>
+                  <th>Rule</th>
+                  <th>Pattern</th>
+                  <th>Problem-solving cue</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Modus Ponens</td>
+                  <td><code>P -&gt; Q</code>, <code>P</code>; therefore <code>Q</code></td>
+                  <td>The condition is actually satisfied.</td>
+                </tr>
+                <tr>
+                  <td>Modus Tollens</td>
+                  <td><code>P -&gt; Q</code>, <code>not Q</code>; therefore <code>not P</code></td>
+                  <td>The consequence failed, so the cause cannot hold.</td>
+                </tr>
+                <tr>
+                  <td>Transitivity</td>
+                  <td><code>P -&gt; Q</code>, <code>Q -&gt; R</code>; therefore <code>P -&gt; R</code></td>
+                  <td>Two implications form a chain.</td>
+                </tr>
+                <tr>
+                  <td>Resolution</td>
+                  <td><code>P or Q</code>, <code>not P or R</code>; therefore <code>Q or R</code></td>
+                  <td>A variable appears once positive and once negated.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div class="footer">
+      <div><a href="teaching-demonstrations.html">Back to Teaching Demonstrations</a></div>
+      <div>&copy; <span id="y"></span> Mahipal Jadeja</div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
