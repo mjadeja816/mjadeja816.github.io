@@ -32,6 +32,12 @@ The primary pages are `index.html`, `talks.html`, `recognition.html`, `tools.htm
 
 The downloadable official CV is `assets/Mahipal_Jadeja_CV.pdf`. Replace it only with an authoritative updated copy, update source metadata, and verify source-page links in the talks archive.
 
+## LinkedIn follow invitations
+
+`LINKEDIN_FOLLOW` in `scripts/build_site.py` controls the Follow on LinkedIn buttons. It preserves the existing personal follow link. Visitors continue to LinkedIn to sign in or follow; the site never claims a follow has completed. The canonical `LINKEDIN` profile URL remains separate for profile and messaging links.
+
+Invitations appear in the homepage introduction, after relevant content on the main pages and teaching index, and in the shared footer. Benefit copy explains what followers can expect. These are ordinary accessible links, with no LinkedIn tracking widget, popup, or new script dependency. LinkedIn documents the website follow-link feature in [its official help](https://www.linkedin.com/help/linkedin/answer/a762822).
+
 ## Contact behavior
 
 The contact form prepares a message locally and opens either the visitor's email application (`mailto:`) or a Gmail compose tab. The visitor reviews the draft and presses Send in their email service. Copy-message and copy-address controls provide alternatives. The site does not receive or store submissions and never displays a false “sent” confirmation. Direct institutional email and LinkedIn links remain available without JavaScript.

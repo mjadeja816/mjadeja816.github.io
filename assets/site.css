@@ -59,3 +59,26 @@
 @media(max-width:700px){.recognition-home{grid-template-columns:1fr}.recognition-home .recognition-card,.recognition-home .recognition-card:nth-child(n+4){grid-column:auto}.stat strong{font-size:clamp(2.6rem,10vw,3.5rem)}.tutor-body{padding:20px}.chat-question{margin-left:10px}.case-copy,.quote-panel,.tutor-visual{min-width:0}.quote-panel p{overflow-wrap:break-word}}
 
 @media(min-width:981px) and (max-width:1190px){.header-inner{min-height:78px;flex-wrap:wrap}.js .menu-button{display:flex}.nav-links{width:100%;flex-wrap:wrap;padding-bottom:20px;gap:8px 26px}.nav-links a{font-size:.9rem;min-height:38px}.js .nav-links{display:none}.js .nav-links.is-open{display:flex}}
+
+/* Contextual LinkedIn invitations stay in the reading flow. */
+.btn-linkedin{background:#0a66c2;border-color:#0a66c2;white-space:nowrap;gap:10px}
+.btn-linkedin:hover{background:#004182;border-color:#004182}
+.btn-linkedin svg{width:19px;height:19px;flex-shrink:0}
+.hero .btn-linkedin{background:transparent;color:#0a66c2;border-color:#0a66c2}
+.hero .btn-linkedin:hover{background:#eaf2fb;color:#004182;border-color:#004182}
+.hero-follow-note{color:var(--muted);font-size:.78rem;margin-top:13px;max-width:38em}
+.follow-invitation{display:flex;align-items:center;gap:24px;margin-top:42px;padding:28px 30px;background:#fff;border:1px solid #d8e2ec;border-left:3px solid #0a66c2;border-radius:4px}
+.follow-invitation>img{width:56px;height:64px;object-fit:cover;object-position:center 20%;border-radius:4px;flex-shrink:0}
+.follow-copy{flex:1;min-width:0}
+.follow-copy h3,.contact-follow h3{font-size:1.75rem;line-height:1.15;color:var(--navy);margin:0 0 8px}
+.follow-copy p{font-size:.86rem;color:var(--muted);max-width:62ch;line-height:1.65;margin:0}
+.follow-invitation>.btn{flex-shrink:0}
+.about-copy .follow-invitation{flex-wrap:wrap}
+.about-copy .follow-copy{flex-basis:calc(100% - 84px)}
+.about-copy .follow-copy p{font-size:.86rem;margin:0}
+.contact-follow{margin-top:30px;padding-top:28px;border-top:1px solid var(--line)}
+.contact-follow p{font-size:.86rem;margin:0 0 20px;color:var(--muted)}
+.site-footer .footer-follow-copy{margin:0 0 16px;max-width:28ch}
+.site-footer .btn-linkedin{margin-bottom:22px;padding:12px 16px;font-size:.8rem;color:#fff}
+@media(max-width:980px){.follow-invitation{flex-wrap:wrap}.follow-copy{flex-basis:calc(100% - 84px)}.site-footer .btn-linkedin{white-space:normal;text-align:left}}
+@media(max-width:700px){.follow-invitation{gap:18px;padding:24px 22px;margin-top:32px}.follow-copy h3,.contact-follow h3{font-size:1.6rem}.follow-copy{flex-basis:calc(100% - 74px)}.follow-invitation>img{width:48px;height:58px}.follow-invitation>.btn{margin-top:3px}.footer-top>div:last-child{grid-column:1/-1}.site-footer .footer-follow-copy{max-width:38ch}}
