@@ -1,0 +1,31 @@
+[
+  {
+    "title": "Programme advisory contribution",
+    "organization": "E&ICT Academy, IIT Kanpur · Simplilearn",
+    "description": "Listed as a programme advisor for the Generative AI and Agentic AI certificate course.",
+    "url": "https://www.simplilearn.com/gen-ai-agentic-ai-certificate-course",
+    "cta": "View the programme advisors",
+    "date": null,
+    "source": "Verified programme page and official CV, page 2"
+  },
+  {
+    "title": "AI-powered education, learning, and research",
+    "organization": "Generative AI in Education Group",
+    "description": "A September 2024 online presentation on enhancing learning, collaboration, and research with Humata AI, for the group organised by Dr. Rea Lavi at MIT.",
+    "url": "assets/Mahipal_Jadeja_CV.pdf#page=3",
+    "cta": "View the documented session",
+    "date": "2024-09",
+    "source": "Official CV, entry 136 and video link",
+    "recordingSourceUrl": "https://www.youtube.com/watch?v=xRxBw8MdxQ0",
+    "recordingStatus": "YouTube oEmbed returned HTTP 401 during verification on 2026-11-10; link to authoritative CV record instead."
+  },
+  {
+    "title": "Machine learning and prompt engineering",
+    "organization": "Critikid",
+    "description": "An interview exploring machine learning and prompt engineering with Dr. Mahipal Jadeja.",
+    "url": "https://critikid.com/machine-learning",
+    "cta": "Read the interview",
+    "date": null,
+    "source": "Verified original interview page"
+  }
+]

@@ -1,0 +1,142 @@
+{
+  "source": {
+    "url": "https://cvip2019.mnit.ac.in/PortalProfile/resume/faculty/mnit272141020260530401791979240.pdf",
+    "pages": 19,
+    "filenameDate": "2026-10-14",
+    "retrievedAt": "2026-11-10",
+    "note": "Official MNIT-hosted CV; filename date is not an independently stated revision date. Topic/audience groupings are editorial classifications of source entries."
+  },
+  "name": "Dr. Mahipal Jadeja",
+  "email": "mahipaljadeja.cse@mnit.ac.in",
+  "education": [
+    {
+      "degree": "PhD in Computer Science and Engineering",
+      "institution": "Dhirubhai Ambani Institute of Information and Communication Technology",
+      "location": "Gandhinagar, India",
+      "start": "2013-01",
+      "end": "2018-02"
+    },
+    {
+      "degree": "BE in Computer Engineering",
+      "institution": "CSPIT, Changa (Gujarat Technological University)",
+      "location": "Changa, India",
+      "start": "2008-07",
+      "end": "2012-06"
+    }
+  ],
+  "experience": [
+    {
+      "role": "Assistant Professor, Computer Science and Engineering",
+      "institution": "Malaviya National Institute of Technology Jaipur",
+      "start": "2019-03",
+      "end": null
+    },
+    {
+      "role": "Assistant Professor, Information and Communication Technology",
+      "institution": "Adani Institute of Infrastructure Engineering",
+      "start": "2017-12",
+      "end": "2019-02"
+    },
+    {
+      "role": "Assistant Professor, Computer Engineering",
+      "institution": "K J Campus, Savli",
+      "start": "2012-07",
+      "end": "2012-11"
+    }
+  ],
+  "researchInterests": [
+    "Theoretical Computer Science",
+    "Graph Theory and Algorithms",
+    "Social Network Analysis",
+    "Graph Neural Networks",
+    "Natural Language Processing",
+    "Generative AI",
+    "Prompt Engineering and Custom GPTs",
+    "Agentic AI and Retrieval Augmented Generation",
+    "AI Assisted Research",
+    "Private LLMs"
+  ],
+  "metrics": [
+    {
+      "value": "175+",
+      "label": "Invited talks and expert sessions",
+      "qualifier": "Reported in official CV; conservative headline retained despite 193 archive entries."
+    },
+    {
+      "value": "15,000+",
+      "label": "Individuals reached",
+      "qualifier": "Estimated outreach reported in official CV."
+    },
+    {
+      "value": "150+",
+      "label": "Academic YouTube videos",
+      "qualifier": "As reported in CV, July 2026."
+    },
+    {
+      "value": "4 lakh+",
+      "label": "YouTube views",
+      "qualifier": "As of 3 July 2026, as reported in CV."
+    },
+    {
+      "value": "1,000+",
+      "label": "Python Ki Pathshala conversations",
+      "qualifier": "As of 3 July 2026; conversations are not distinct learners."
+    }
+  ],
+  "supervision": {
+    "awardedPhD": [
+      {
+        "name": "Atul Kumar Verma",
+        "topic": "Navigating Real World Networks: Centrality Infused Graph Neural Network Paradigms",
+        "year": 2023
+      },
+      {
+        "name": "Rahul Saxena",
+        "topic": "Novel Techniques to Enhance Influence in Social Networks",
+        "year": 2023
+      },
+      {
+        "name": "Praveen Singh Thakur",
+        "topic": "Software Code Smell Detection in an Imbalanced Environment",
+        "year": 2024
+      },
+      {
+        "name": "Shivani Rohilla",
+        "topic": "Detecting Autism Spectrum Disorder using Deep Learning",
+        "year": 2026
+      }
+    ],
+    "ongoingPhD": [
+      {
+        "name": "Neeraj Garg",
+        "topic": "Natural Language Processing using Graph Neural Networks"
+      }
+    ],
+    "postgraduateProjectsListed": 12
+  },
+  "academicService": [
+    {
+      "role": "Board of Studies member, BTech Information Technology",
+      "institution": "CSPIT, CHARUSAT University",
+      "since": "2022-12"
+    },
+    {
+      "role": "Board of Studies member, BTech AI/ML",
+      "institution": "CSPIT, CHARUSAT University",
+      "since": "2023-09"
+    },
+    {
+      "role": "Board of Studies member, Artificial Intelligence",
+      "institution": "Vishvakarma Skills University",
+      "since": "2024-03"
+    }
+  ],
+  "cvUrl": "assets/Mahipal_Jadeja_CV.pdf",
+  "book": {
+    "title": "Exploring Susceptible Infectious Recovered (SIR) Model for COVID 19 Investigation",
+    "authors": "R. Saxena, M. Jadeja and V. Bhateja",
+    "publisher": "Springer Singapore",
+    "year": 2022,
+    "isbn": "9789811941757"
+  }
+}
