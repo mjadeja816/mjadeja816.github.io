@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Taylor Series Discovery Lab | Mahipal Jadeja</title>
+    <meta
+      name="description"
+      content="Build Taylor approximations one term at a time. Ten interactive experiments in derivatives, polynomial approximation, geometry and convergence."
+    />
+    <meta name="theme-color" content="#0c1422" />
+    <link rel="canonical" href="https://mahipaljadeja.com/taylor-series-lab/" />
+    <link rel="icon" href="../assets/favicon.svg" />
+    <link rel="stylesheet" href="vendor/katex.min.css" />
+    <link rel="stylesheet" href="style.css" />
+    <script defer src="vendor/katex.min.js"></script>
+    <script type="module" src="app.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to experiment</a>
+    <div class="shell">
+      <aside class="rail" aria-label="Course navigation">
+        <a class="brand" href="../"
+          ><span class="brand-mark">mj</span
+          ><span>Mahipal Jadeja<small>Interactive mathematics</small></span></a
+        >
+        <div class="course">
+          <span class="course-symbol">∑</span>
+          <div>Taylor series<small>A discovery lab</small></div>
+        </div>
+        <p class="rail-caption">Your learning path</p>
+        <nav id="lessons" aria-label="Experiments"></nav>
+        <div class="rail-bottom">
+          <p>One point. Many derivatives.<br />A whole neighbourhood.</p>
+          <a href="../teaching-demonstrations.html">All teaching activities ↗</a
+          ><a href="../calculus-lab/">Calculus &amp; optimization ↗</a>
+        </div>
+      </aside>
+      <main id="main">
+        <header class="topbar">
+          <span id="chapter"></span>
+          <div class="top-actions">
+            <label class="sr" for="mode">Learning mode</label
+            ><select id="mode">
+              <option value="guided">Guided learning</option>
+              <option value="free">Free exploration</option>
+              <option value="classroom">Classroom presentation</option></select
+            ><button id="share" class="quiet">Share</button
+            ><button id="focus" class="quiet" aria-pressed="false">
+              Focus view
+            </button>
+          </div>
+        </header>
+        <section class="intro">
+          <h1 id="title"></h1>
+          <p id="subtitle"></p>
+        </section>
+        <div class="workspace">
+          <section class="stage" aria-label="Interactive visualisation">
+            <div class="stage-top">
+              <span id="stage-title"></span
+              ><button id="reset" class="quiet">Reset lab ↺</button>
+            </div>
+            <div id="legend" class="legend"></div>
+            <div id="plot" class="plot"></div>
+            <div id="readouts" class="readouts" aria-live="off"></div>
+            <div class="plot-options">
+              <label
+                ><input id="show-previous" type="checkbox" checked /> Previous
+                approximation</label
+              ><label
+                ><input id="show-term" type="checkbox" /> Active term</label
+              ><label
+                ><input id="show-error" type="checkbox" /> Error plot</label
+              ><label
+                ><input id="show-tangent" type="checkbox" /> Tangents</label
+              >
+            </div>
+            <div id="error-plot"></div>
+            <p id="plot-note" class="plot-note"></p>
+          </section>
+          <aside class="experiment" aria-label="Experiment controls">
+            <div class="step-label" id="step-label"></div>
+            <h2 id="question"></h2>
+            <p id="prompt"></p>
+            <div id="predictions" class="predictions"></div>
+            <p id="feedback" class="feedback" role="status"></p>
+            <div id="controls"></div>
+            <div class="hint-actions">
+              <button id="hint">Give me a hint</button
+              ><button id="undo" disabled>Undo</button>
+            </div>
+            <p id="hint-text" class="hint" hidden></p>
+            <button id="reveal" class="primary">
+              Explore the construction
+            </button>
+            <div class="step-actions">
+              <button id="step-back" disabled>← Step back</button
+              ><button id="step-next">Next step →</button>
+            </div>
+          </aside>
+        </div>
+        <section class="understage">
+          <div class="explanation">
+            <div class="section-line">
+              <h2>Follow the mathematics</h2>
+              <span id="reveal-count"></span>
+            </div>
+            <div id="derivation"></div>
+            <div id="inspector"></div>
+          </div>
+          <div class="companion">
+            <div class="section-line"><h2 id="companion-title"></h2></div>
+            <div id="companion"></div>
+            <p id="companion-note"></p>
+          </div>
+        </section>
+        <section class="checkpoint" id="checkpoint"></section>
+        <footer class="lesson-footer">
+          <button id="prev-lab">← Previous lab</button
+          ><span id="progress"></span
+          ><button id="next-lab" class="primary">Next lab →</button>
+        </footer>
+        <p class="fineprint">
+          Explore at your pace. Settings are saved in this browser. Angles are
+          measured in radians.
+        </p>
+        <div id="toast" role="status"></div>
+        <noscript
+          >This lab needs JavaScript to draw and update its interactive
+          experiments.</noscript
+        >
+      </main>
+    </div>
+  </body>
+</html>
